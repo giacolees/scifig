@@ -1,0 +1,25 @@
+diagram:
+  title: 'Illustrative training and inference'
+  layout: graphviz
+  direction: left_to_right
+  nodes:
+    train_data: {label: Training data, role: data, size: [1.4, 0.85]}
+    trainer: {label: Train model, role: module, size: [1.4, 0.85]}
+    loss: {label: Loss, role: loss}
+    weights: {label: Saved weights, role: store, size: [1.4, 0.85]}
+    input: {label: Input, role: input}
+    model: {label: Model, role: module, frozen: true}
+    output: {label: Prediction, role: output}
+  edges:
+    - {source: train_data, target: trainer}
+    - {source: trainer, target: loss}
+    - {source: loss, target: trainer, label: Update, kind: gradient}
+    - {source: trainer, target: weights}
+    - {source: weights, target: model, label: Load, kind: control}
+    - {source: input, target: model}
+    - {source: model, target: output}
+  groups:
+    training: {label: Training, role: training, nodes: [train_data, trainer, loss]}
+    inference: {label: Inference, role: inference, nodes: [input, model, output]}
+  style: {preset: publication, width: double_column, height: 4}
+  export: {directory: ../../docs/gallery, stem: diagrams_training_inference, formats: [pdf, svg, png], dpi: 300}

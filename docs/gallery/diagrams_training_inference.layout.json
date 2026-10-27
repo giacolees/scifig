@@ -1,0 +1,512 @@
+{
+  "bounds": [
+    0.0,
+    0.0,
+    780.75,
+    305.0
+  ],
+  "edges": [
+    {
+      "curved": true,
+      "end_point": [
+        163.68,
+        235.0
+      ],
+      "label_position": null,
+      "points": [
+        [
+          123.08,
+          235.0
+        ],
+        [
+          132.56,
+          235.0
+        ],
+        [
+          142.58,
+          235.0
+        ],
+        [
+          152.36,
+          235.0
+        ]
+      ]
+    },
+    {
+      "curved": true,
+      "end_point": [
+        345.43,
+        218.25
+      ],
+      "label_position": null,
+      "points": [
+        [
+          264.84,
+          218.07
+        ],
+        [
+          271.42,
+          216.39
+        ],
+        [
+          278.12,
+          214.96
+        ],
+        [
+          284.6,
+          214.0
+        ],
+        [
+          301.75,
+          211.46
+        ],
+        [
+          306.43,
+          211.64
+        ],
+        [
+          323.6,
+          214.0
+        ],
+        [
+          327.17,
+          214.49
+        ],
+        [
+          330.81,
+          215.11
+        ],
+        [
+          334.47,
+          215.83
+        ]
+      ]
+    },
+    {
+      "curved": true,
+      "end_point": [
+        264.81,
+        234.72
+      ],
+      "label_position": [
+        304.1,
+        242.84
+      ],
+      "points": [
+        [
+          345.24,
+          234.28
+        ],
+        [
+          323.89,
+          234.4
+        ],
+        [
+          298.74,
+          234.54
+        ],
+        [
+          276.28,
+          234.66
+        ]
+      ]
+    },
+    {
+      "curved": true,
+      "end_point": [
+        345.24,
+        169.91
+      ],
+      "label_position": null,
+      "points": [
+        [
+          264.81,
+          210.17
+        ],
+        [
+          286.53,
+          199.29
+        ],
+        [
+          312.21,
+          186.44
+        ],
+        [
+          335.0,
+          175.03
+        ]
+      ]
+    },
+    {
+      "curved": true,
+      "end_point": [
+        525.3,
+        68.881
+      ],
+      "label_position": [
+        482.27,
+        109.24
+      ],
+      "points": [
+        [
+          446.66,
+          115.54
+        ],
+        [
+          468.38,
+          102.65
+        ],
+        [
+          493.83,
+          87.554
+        ],
+        [
+          515.59,
+          74.643
+        ]
+      ]
+    },
+    {
+      "curved": true,
+      "end_point": [
+        515.66,
+        45.0
+      ],
+      "label_position": null,
+      "points": [
+        [
+          446.66,
+          45.0
+        ],
+        [
+          464.76,
+          45.0
+        ],
+        [
+          485.43,
+          45.0
+        ],
+        [
+          504.41,
+          45.0
+        ]
+      ]
+    },
+    {
+      "curved": true,
+      "end_point": [
+        657.83,
+        45.0
+      ],
+      "label_position": null,
+      "points": [
+        [
+          617.23,
+          45.0
+        ],
+        [
+          626.71,
+          45.0
+        ],
+        [
+          636.73,
+          45.0
+        ],
+        [
+          646.51,
+          45.0
+        ]
+      ]
+    }
+  ],
+  "engine": "graphviz",
+  "engine_version": "dot - graphviz version 14.0.2 (20251019.1705)",
+  "figure_size_inches": [
+    7.0,
+    4.0
+  ],
+  "groups": {
+    "inference": {
+      "bounds": [
+        331.6,
+        8.0,
+        772.75,
+        100.0
+      ]
+    },
+    "training": {
+      "bounds": [
+        8.0,
+        190.0,
+        460.4,
+        297.0
+      ]
+    }
+  },
+  "matplotlib_version": "3.11.2",
+  "nodes": {
+    "input": {
+      "center": [
+        396.0,
+        45.0
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    },
+    "loss": {
+      "center": [
+        396.0,
+        234.0
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    },
+    "model": {
+      "center": [
+        566.55,
+        45.0
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    },
+    "output": {
+      "center": [
+        708.35,
+        45.0
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    },
+    "train_data": {
+      "center": [
+        72.4,
+        235.0
+      ],
+      "size": [
+        100.8,
+        61.199999999999996
+      ]
+    },
+    "trainer": {
+      "center": [
+        214.2,
+        235.0
+      ],
+      "size": [
+        100.8,
+        61.199999999999996
+      ]
+    },
+    "weights": {
+      "center": [
+        396.0,
+        145.0
+      ],
+      "size": [
+        100.8,
+        61.199999999999996
+      ]
+    }
+  },
+  "schema_version": 1,
+  "scifig_version": "0.2.0",
+  "spec": {
+    "direction": "left_to_right",
+    "edges": [
+      {
+        "kind": "data",
+        "label": "",
+        "source": "train_data",
+        "source_port": null,
+        "target": "trainer",
+        "target_port": null
+      },
+      {
+        "kind": "data",
+        "label": "",
+        "source": "trainer",
+        "source_port": null,
+        "target": "loss",
+        "target_port": null
+      },
+      {
+        "kind": "gradient",
+        "label": "Update",
+        "source": "loss",
+        "source_port": null,
+        "target": "trainer",
+        "target_port": null
+      },
+      {
+        "kind": "data",
+        "label": "",
+        "source": "trainer",
+        "source_port": null,
+        "target": "weights",
+        "target_port": null
+      },
+      {
+        "kind": "control",
+        "label": "Load",
+        "source": "weights",
+        "source_port": null,
+        "target": "model",
+        "target_port": null
+      },
+      {
+        "kind": "data",
+        "label": "",
+        "source": "input",
+        "source_port": null,
+        "target": "model",
+        "target_port": null
+      },
+      {
+        "kind": "data",
+        "label": "",
+        "source": "model",
+        "source_port": null,
+        "target": "output",
+        "target_port": null
+      }
+    ],
+    "export": {
+      "directory": ".",
+      "dpi": 300,
+      "formats": [
+        "pdf",
+        "svg",
+        "png"
+      ],
+      "stem": "diagrams_training_inference"
+    },
+    "feedforward": false,
+    "groups": {
+      "inference": {
+        "label": "Inference",
+        "nodes": [
+          "input",
+          "model",
+          "output"
+        ],
+        "role": "inference"
+      },
+      "training": {
+        "label": "Training",
+        "nodes": [
+          "train_data",
+          "trainer",
+          "loss"
+        ],
+        "role": "training"
+      }
+    },
+    "layout": "graphviz",
+    "nodes": {
+      "input": {
+        "frozen": false,
+        "label": "Input",
+        "operation": null,
+        "position": null,
+        "role": "input",
+        "shape": null,
+        "size": [
+          1.4,
+          0.65
+        ]
+      },
+      "loss": {
+        "frozen": false,
+        "label": "Loss",
+        "operation": null,
+        "position": null,
+        "role": "loss",
+        "shape": null,
+        "size": [
+          1.4,
+          0.65
+        ]
+      },
+      "model": {
+        "frozen": true,
+        "label": "Model",
+        "operation": null,
+        "position": null,
+        "role": "module",
+        "shape": null,
+        "size": [
+          1.4,
+          0.65
+        ]
+      },
+      "output": {
+        "frozen": false,
+        "label": "Prediction",
+        "operation": null,
+        "position": null,
+        "role": "output",
+        "shape": null,
+        "size": [
+          1.4,
+          0.65
+        ]
+      },
+      "train_data": {
+        "frozen": false,
+        "label": "Training data",
+        "operation": null,
+        "position": null,
+        "role": "data",
+        "shape": null,
+        "size": [
+          1.4,
+          0.85
+        ]
+      },
+      "trainer": {
+        "frozen": false,
+        "label": "Train model",
+        "operation": null,
+        "position": null,
+        "role": "module",
+        "shape": null,
+        "size": [
+          1.4,
+          0.85
+        ]
+      },
+      "weights": {
+        "frozen": false,
+        "label": "Saved weights",
+        "operation": null,
+        "position": null,
+        "role": "store",
+        "shape": null,
+        "size": [
+          1.4,
+          0.85
+        ]
+      }
+    },
+    "style": {
+      "colors": {},
+      "font_family": null,
+      "font_size": null,
+      "height": 4.0,
+      "palette": "accessible",
+      "preset": "publication",
+      "rc": {},
+      "width": "double_column"
+    },
+    "title": "Illustrative training and inference",
+    "type": "architecture"
+  }
+}

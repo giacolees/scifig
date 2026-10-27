@@ -1,0 +1,18 @@
+diagram:
+  title: 'Illustrative ML pipeline'
+  layout: graphviz
+  direction: left_to_right
+  feedforward: true
+  nodes:
+    data: {label: Data, role: input}
+    preprocess: {label: Preprocess, role: operation}
+    encoder: {label: Encoder, role: module}
+    classifier: {label: Classifier, role: module}
+    prediction: {label: Prediction, role: output}
+  edges:
+    - {source: data, target: preprocess}
+    - {source: preprocess, target: encoder}
+    - {source: encoder, target: classifier}
+    - {source: classifier, target: prediction}
+  style: {preset: publication, width: double_column, height: 1.4}
+  export: {directory: ../../docs/gallery, stem: diagrams_ml_pipeline, formats: [pdf, svg, png], dpi: 300}

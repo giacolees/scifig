@@ -307,7 +307,7 @@ z
     </g>
     <g id="text_4">
      <!-- Task -->
-     <g transform="translate(257.869492 195.030979) scale(0.09 -0.09)">
+     <g style="fill: #222222" transform="translate(257.869492 195.030979) scale(0.09 -0.09)">
       <defs>
        <path id="DejaVuSans-37" d="M -19 4666 
 L 3928 4666 
@@ -587,7 +587,7 @@ z
     </g>
     <g id="text_10">
      <!-- Success (%) -->
-     <g transform="translate(10.69299 137.857115) rotate(-90) scale(0.09 -0.09)">
+     <g style="fill: #222222" transform="translate(10.69299 137.857115) rotate(-90) scale(0.09 -0.09)">
       <defs>
        <path id="DejaVuSans-36" d="M 3425 4513 
 L 3425 3897 
@@ -793,7 +793,7 @@ z
    </g>
    <g id="text_11">
     <!-- Synthetic: task benchmark -->
-    <g transform="translate(207.086992 45.958728) scale(0.09 -0.09)">
+    <g style="fill: #222222" transform="translate(207.086992 45.958728) scale(0.09 -0.09)">
      <defs>
       <path id="DejaVuSans-5c" d="M 2059 -325 
 Q 1816 -950 1584 -1140 
@@ -983,7 +983,7 @@ z
   <g id="legend_1">
    <g id="text_12">
     <!-- Method -->
-    <g transform="translate(235.122187 14.128594) scale(0.09 -0.09)">
+    <g style="fill: #222222" transform="translate(235.122187 14.128594) scale(0.09 -0.09)">
      <defs>
       <path id="DejaVuSans-30" d="M 628 4666 
 L 1569 4666 
@@ -1067,7 +1067,7 @@ z
    </g>
    <g id="text_13">
     <!-- DAgger -->
-    <g transform="translate(182.610844 26.495437) scale(0.081 -0.081)">
+    <g style="fill: #222222" transform="translate(182.610844 26.495437) scale(0.081 -0.081)">
      <defs>
       <path id="DejaVuSans-27" d="M 1259 4147 
 L 1259 519 
@@ -1157,7 +1157,7 @@ z
    </g>
    <g id="text_14">
     <!-- AggreVaTe -->
-    <g transform="translate(251.725359 26.495437) scale(0.081 -0.081)">
+    <g style="fill: #222222" transform="translate(251.725359 26.495437) scale(0.081 -0.081)">
      <defs>
       <path id="DejaVuSans-39" d="M 1831 0 
 L 50 4666 
@@ -1191,7 +1191,7 @@ z
    </g>
    <g id="text_15">
     <!-- BC -->
-    <g transform="translate(332.997469 26.495437) scale(0.081 -0.081)">
+    <g style="fill: #222222" transform="translate(332.997469 26.495437) scale(0.081 -0.081)">
      <defs>
       <path id="DejaVuSans-25" d="M 1259 2228 
 L 1259 519 

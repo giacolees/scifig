@@ -1,10 +1,13 @@
 """Validated, serializable figure specifications."""
 
 from pathlib import Path
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+if TYPE_CHECKING:
+    from scifig.diagrams.specs import DiagramSpec
 
 
 class _UniqueLoader(yaml.SafeLoader):
@@ -157,7 +160,7 @@ class FigureSpec(_Model):
         return self
 
 
-def load_spec(path: str | Path) -> FigureSpec:
+def load_spec(path: str | Path) -> "FigureSpec | DiagramSpec":
     """Load YAML and resolve its paths relative to the specification file."""
     path = Path(path).resolve()
     try:
@@ -165,14 +168,20 @@ def load_spec(path: str | Path) -> FigureSpec:
             raw = yaml.load(stream, Loader=_UniqueLoader)
         if not isinstance(raw, dict):
             raise ValueError("specification must be a mapping")
-        if "figure" in raw:
-            if set(raw) != {"figure"}:
-                raise ValueError("figure wrapper cannot have sibling keys")
-            raw = raw["figure"]
+        wrapper = "diagram" if "diagram" in raw else "figure" if "figure" in raw else None
+        if wrapper is not None:
+            if set(raw) != {wrapper}:
+                raise ValueError(f"{wrapper} wrapper cannot have sibling keys")
+            raw = raw[wrapper]
             if not isinstance(raw, dict):
-                raise ValueError("figure must be a mapping")
-        spec = FigureSpec.model_validate(raw)
-        if spec.data is not None:
+                raise ValueError(f"{wrapper} must be a mapping")
+        from scifig.diagrams.specs import DiagramSpec
+
+        is_diagram = wrapper == "diagram" or (
+            wrapper is None and (raw.get("type") == "architecture" or "nodes" in raw)
+        )
+        spec = DiagramSpec.model_validate(raw) if is_diagram else FigureSpec.model_validate(raw)
+        if isinstance(spec, FigureSpec) and spec.data is not None:
             spec.data = (path.parent / spec.data).resolve()
         spec.export.directory = (path.parent / spec.export.directory).resolve()
         return spec

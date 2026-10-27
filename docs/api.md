@@ -15,6 +15,12 @@ raise `ValueError` (including the more specific `DataError` and Pydantic errors)
 A YAML document may contain a single `figure:` wrapper or a bare figure mapping.
 Unknown options and duplicate YAML keys fail. Save the source data with the spec.
 
+`DiagramSpec`, `NodeSpec`, `EdgeSpec`, `GroupSpec`, and `architecture(nodes, edges,
+**kwargs)` provide graph-based diagrams. `load_spec` also accepts a `diagram:`
+wrapper (or a bare architecture spec); `render` and `validate` dispatch to the
+diagram pipeline. Diagrams reject a tabular `data` override and share style and
+export settings with plots. See [the diagram API](diagrams.md) for full semantics.
+
 ## Options
 
 | Field | Meaning |

@@ -16,11 +16,18 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python }}
+      - name: Install Graphviz on Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y graphviz
+      - name: Install Graphviz on macOS
+        if: runner.os == 'macOS'
+        run: brew install graphviz
       - run: uv sync --locked --extra dev
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run pytest -q
       - run: uv run python examples/make_gallery.py
+      - run: uv run python examples/make_diagram_gallery.py
       - run: uv build
       - uses: actions/upload-artifact@v4
         with:

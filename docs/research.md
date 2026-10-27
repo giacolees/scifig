@@ -33,3 +33,15 @@ Reviewed 2026-10-27 via the GitHub repository contents and source files at the c
 3. Display uncertainty when supplied, use explicit axis labels and sensible scales, and avoid hiding baseline choices. Use direct labels where they improve interpretation.
 4. Offer vector output for text and simple marks, with selective rasterization or raster export for dense layers; avoid depending on a bundled or machine-specific font.
 5. Use scoped Matplotlib settings, caller-controlled output paths, deterministic examples and explicit dependencies. Adapt general ideas independently rather than copying the reference implementations.
+
+## Diagram layout extension
+
+Graphviz's [dot layout](https://graphviz.org/docs/layouts/dot/) provides hierarchical
+directed positioning, while its [JSON geometry](https://graphviz.org/docs/outputs/json/)
+includes node positions, cluster bounds and routed edges. scifig invokes the
+external tool optionally, parses that geometry, and renders original Matplotlib
+artists. The binary and its code are not vendored; users install Graphviz
+separately. Manual layouts avoid that dependency. Matplotlib's
+[Path](https://matplotlib.org/stable/api/path_api.html) and
+[FancyArrowPatch](https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.FancyArrowPatch.html)
+support vector paths and arrowheads without a raster conversion stage.

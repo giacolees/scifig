@@ -7,7 +7,7 @@ from pathlib import Path
 
 import yaml
 
-from scifig import list_styles, list_templates, load_spec, render, validate
+from scifig import DiagramSpec, list_styles, list_templates, load_spec, render, validate
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -38,16 +38,20 @@ def main(argv: list[str] | None = None) -> int:
         # remain user-owned and must accompany this spec for reproduction.
         saved_spec = spec.export.directory / f"{spec.export.stem}.yaml"
         payload = spec.model_dump(mode="json")
-        if spec.data is not None:
+        if not isinstance(spec, DiagramSpec) and spec.data is not None:
             payload["data"] = os.path.relpath(spec.data, saved_spec.parent)
         payload["export"]["directory"] = "."
-        saved_spec.write_text(
-            yaml.safe_dump({"figure": payload}, sort_keys=False), encoding="utf-8"
-        )
-        for path in [*paths, saved_spec]:
+        wrapper = "diagram" if isinstance(spec, DiagramSpec) else "figure"
+        saved_spec.write_text(yaml.safe_dump({wrapper: payload}, sort_keys=False), encoding="utf-8")
+        sidecars = [saved_spec]
+        if isinstance(spec, DiagramSpec):
+            sidecars.append(
+                result.save_layout(spec.export.directory / f"{spec.export.stem}.layout.json")
+            )
+        for path in [*paths, *sidecars]:
             print(path)
         return 0
-    except (ValueError, TypeError, OSError) as exc:
+    except (ValueError, TypeError, OSError, RuntimeError) as exc:
         print(f"scifig: {exc}", file=sys.stderr)
         return 2
 

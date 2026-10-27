@@ -3,7 +3,7 @@
 import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import matplotlib as mpl
 import pandas as pd
@@ -15,10 +15,14 @@ from matplotlib.legend import Legend
 from scifig.core.data import load_data
 from scifig.core.registry import get_data_family, get_template
 from scifig.core.specs import FigureSpec
+from scifig.diagrams.specs import DiagramSpec
 from scifig.rendering.export import export_figure, save_figure
 from scifig.styles import ResolvedStyle, resolve_style
 from scifig.validation.semantic import prepare_data, validate_data
 from scifig.validation.visual import check_visual
+
+if TYPE_CHECKING:
+    from scifig.diagrams.rendering import DiagramResult
 
 
 class FigureWarning(UserWarning):
@@ -110,9 +114,18 @@ def _capture_messages(records: list[warnings.WarningMessage], diagnostics: list[
     return list(dict.fromkeys([*diagnostics, *(str(record.message) for record in records)]))
 
 
-def validate(spec: FigureSpec | dict[str, Any], data: Any = None) -> list[str]:
+def validate(spec: FigureSpec | DiagramSpec | dict[str, Any], data: Any = None) -> list[str]:
     """Validate data and configuration without rendering; return scientific caveats."""
-    spec = spec if isinstance(spec, FigureSpec) else FigureSpec.model_validate(spec)
+    spec = _coerce_spec(spec)
+    if isinstance(spec, DiagramSpec):
+        from scifig.diagrams.rendering import validate_diagram_config
+
+        if data is not None:
+            raise ValueError("Diagrams define nodes and edges; tabular data is unsupported.")
+        with warnings.catch_warnings(record=True) as records:
+            warnings.simplefilter("always")
+            diagnostics = validate_diagram_config(spec)
+        return _capture_messages(records, diagnostics)
     with warnings.catch_warnings(record=True) as records:
         warnings.simplefilter("always")
         _, diagnostics, _ = _prepare(spec, data)
@@ -126,9 +139,25 @@ def _axis_label(spec: FigureSpec, axis: str) -> str:
     return label
 
 
-def render(spec: FigureSpec | dict[str, Any], data: Any = None) -> FigureResult:
+def _coerce_spec(spec: FigureSpec | DiagramSpec | dict[str, Any]) -> FigureSpec | DiagramSpec:
+    if isinstance(spec, (FigureSpec, DiagramSpec)):
+        return spec
+    if isinstance(spec, dict) and (spec.get("type") == "architecture" or "nodes" in spec):
+        return DiagramSpec.model_validate(spec)
+    return FigureSpec.model_validate(spec)
+
+
+def render(
+    spec: FigureSpec | DiagramSpec | dict[str, Any], data: Any = None
+) -> "FigureResult | DiagramResult":
     """Render a validated spec headlessly without changing the caller's rcParams."""
-    spec = spec if isinstance(spec, FigureSpec) else FigureSpec.model_validate(spec)
+    spec = _coerce_spec(spec)
+    if isinstance(spec, DiagramSpec):
+        from scifig.diagrams.rendering import render_diagram
+
+        if data is not None:
+            raise ValueError("Diagrams define nodes and edges; tabular data is unsupported.")
+        return render_diagram(spec)
     # A copy protects caller configuration against edits through the result.
     spec = spec.model_copy(deep=True)
     if isinstance(data, (str, Path)):

@@ -35,3 +35,12 @@ the same engine to five families; the agent workflow was independently exercised
 the gallery was rendered and visually inspected. Final verification: 57 passing
 tests in both the locked environment and an isolated Python 3.11 wheel install,
 Ruff passing, and wheel/source archive built. See [validation](validation.md).
+
+## Diagram extension
+
+Completed a separate graph spec and manual/optional Graphviz layout, native
+Matplotlib vector artists, shared Python/YAML/CLI dispatch, graph/shape and visual
+checks, and portable layout records. Three illustrative diagrams were rendered
+and inspected. The updated skill was independently exercised against a supplied
+forward function without inventing tensor dimensions. Version 0.2 adds no Python
+runtime dependency; CI installs the optional layout executable for its gallery.

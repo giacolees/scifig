@@ -290,7 +290,7 @@ z
     </g>
     <g id="text_4">
      <!-- Task -->
-     <g transform="translate(121.88649 195.030979) scale(0.09 -0.09)">
+     <g style="fill: #222222" transform="translate(121.88649 195.030979) scale(0.09 -0.09)">
       <defs>
        <path id="DejaVuSans-37" d="M -19 4666 
 L 3928 4666 
@@ -524,7 +524,7 @@ z
     </g>
     <g id="text_8">
      <!-- Method -->
-     <g transform="translate(11.705631 111.633809) rotate(-90) scale(0.09 -0.09)">
+     <g style="fill: #222222" transform="translate(11.705631 111.633809) rotate(-90) scale(0.09 -0.09)">
       <defs>
        <path id="DejaVuSans-30" d="M 628 4666 
 L 1569 4666 
@@ -967,7 +967,7 @@ z
    </g>
    <g id="text_18">
     <!-- Synthetic: task success -->
-    <g transform="translate(78.902349 10.92024) scale(0.09 -0.09)">
+    <g style="fill: #222222" transform="translate(78.902349 10.92024) scale(0.09 -0.09)">
      <defs>
       <path id="DejaVuSans-36" d="M 3425 4513 
 L 3425 3897 
@@ -1220,7 +1220,7 @@ L 3.5 0
     </g>
     <g id="text_27">
      <!-- Success (%) -->
-     <g transform="translate(238.656906 122.087871) rotate(-90) scale(0.09 -0.09)">
+     <g style="fill: #222222" transform="translate(238.656906 122.087871) rotate(-90) scale(0.09 -0.09)">
       <defs>
        <path id="DejaVuSans-b" d="M 1984 4856 
 Q 1566 4138 1362 3434 

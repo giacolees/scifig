@@ -5,6 +5,8 @@
 Create reproducible, publication-sized scientific figures from Python or YAML.
 Five Matplotlib templates share one validation, style and export engine. A separate
 agent skill supports Codex and Claude Code without an LLM dependency in the library.
+Architecture diagrams use an explicit graph of nodes, connections and boundaries,
+with optional Graphviz layout and the same Matplotlib vector rendering and styles.
 
 ```bash
 git clone https://github.com/giacolees/scifig.git
@@ -59,6 +61,34 @@ scifig templates list
 scifig styles list
 ```
 
+Create a diagram using the same CLI:
+
+```bash
+scifig render examples/diagrams/encoder_decoder.yaml
+```
+
+The manual-layout example needs no additional dependency. For automatic routing,
+install the external [Graphviz](https://graphviz.org/download/) `dot` executable,
+then run `python examples/make_diagram_gallery.py`.
+
+```python
+from scifig import architecture
+
+result = architecture(
+    nodes={
+        "x": {"label": "Input", "role": "input", "position": [0, 0]},
+        "model": {"label": "Encoder", "position": [2, 0]},
+    },
+    edges=[{"source": "x", "target": "model"}],
+    layout="manual",
+)
+result.export("figures", stem="architecture")
+```
+
+[Diagram guide and three examples](docs/diagrams.md) cover pipelines, skip
+connections, and training/inference boundaries. Diagram validation checks the
+supplied graph; it does not infer an architecture or unspecified tensor sizes.
+
 | Template | Long-table columns | Statistical behavior |
 | --- | --- | --- |
 | `learning_curve` | numeric `x`, `y`, optional `group` | Sorted trajectories and optional uncertainty bands |
@@ -90,6 +120,7 @@ across related figures. Automatic stable hashes can collide and warn.
 ```text
 src/scifig/
   core/           # validated specs, table ingestion, callable registry
+  diagrams/       # graph specs, optional layout, vector artists and diagnostics
   styles/         # physical sizes, typography, palettes
   templates/      # five small plotting functions
   rendering/      # common engine, editable result, scoped vector/raster export
@@ -108,7 +139,8 @@ Run checks with `uv run pytest -q`, `uv run ruff check .`, and
 `uv run ruff format --check .`. Build a wheel and source archive with `uv build`.
 
 Initial scope: one axes per figure (plus a heatmap colorbar), CSV/TSV/in-memory
-tables, three simple uncertainty estimators, and Matplotlib only. Layout diagnostics
+tables, three simple uncertainty estimators, and one architecture diagram family.
+Rendering uses Matplotlib; optional Graphviz provides diagram geometry. Layout diagnostics
 are heuristics; inspect previews at final publication size. Use separate processes
 for concurrent rendering because Matplotlib settings are process-global. Output is
 repeatable within a fixed dependency/font environment; cross-platform bytes can

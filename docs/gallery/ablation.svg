@@ -553,7 +553,7 @@ z
     </g>
     <g id="text_5">
      <!-- Configuration -->
-     <g transform="translate(237.06332 195.030979) scale(0.09 -0.09)">
+     <g style="fill: #222222" transform="translate(237.06332 195.030979) scale(0.09 -0.09)">
       <defs>
        <path id="DejaVuSans-13af" d="M 3431 3500 
 L 3431 0 
@@ -1010,7 +1010,7 @@ z
     </g>
     <g id="text_15">
      <!-- Success (%) -->
-     <g transform="translate(10.69299 120.337871) rotate(-90) scale(0.09 -0.09)">
+     <g style="fill: #222222" transform="translate(10.69299 120.337871) rotate(-90) scale(0.09 -0.09)">
       <defs>
        <path id="DejaVuSans-36" d="M 3425 4513 
 L 3425 3897 
@@ -1206,7 +1206,7 @@ z
    </g>
    <g id="text_16">
     <!-- Synthetic: ablation -->
-    <g transform="translate(225.147461 10.92024) scale(0.09 -0.09)">
+    <g style="fill: #222222" transform="translate(225.147461 10.92024) scale(0.09 -0.09)">
      <defs>
       <path id="DejaVuSans-4b" d="M 3513 2113 
 L 3513 0 

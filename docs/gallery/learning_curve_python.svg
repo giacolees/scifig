@@ -229,7 +229,7 @@ z
     </g>
     <g id="text_6">
      <!-- Training (iterations) -->
-     <g transform="translate(93.92957 195.356244) scale(0.09 -0.09)">
+     <g style="fill: #222222" transform="translate(93.92957 195.356244) scale(0.09 -0.09)">
       <defs>
        <path id="DejaVuSans-37" d="M -19 4666 
 L 3928 4666 
@@ -663,7 +663,7 @@ z
     </g>
     <g id="text_11">
      <!-- Success (%) -->
-     <g transform="translate(10.69299 120.50082) rotate(-90) scale(0.09 -0.09)">
+     <g style="fill: #222222" transform="translate(10.69299 120.50082) rotate(-90) scale(0.09 -0.09)">
       <defs>
        <path id="DejaVuSans-36" d="M 3425 4513 
 L 3425 3897 
@@ -949,7 +949,7 @@ z
    </g>
    <g id="text_12">
     <!-- Synthetic: imitation learning -->
-    <g transform="translate(73.975586 10.92024) scale(0.09 -0.09)">
+    <g style="fill: #222222" transform="translate(73.975586 10.92024) scale(0.09 -0.09)">
      <defs>
       <path id="DejaVuSans-5c" d="M 2059 -325 
 Q 1816 -950 1584 -1140 
@@ -1072,7 +1072,7 @@ z
    <g id="legend_1">
     <g id="text_13">
      <!-- Method (mean ± SD) -->
-     <g transform="translate(41.452349 31.048834) scale(0.09 -0.09)">
+     <g style="fill: #222222" transform="translate(41.452349 31.048834) scale(0.09 -0.09)">
       <defs>
        <path id="DejaVuSans-30" d="M 628 4666 
 L 1569 4666 
@@ -1188,7 +1188,7 @@ L 72.650357 40.580677
     </g>
     <g id="text_14">
      <!-- DAgger -->
-     <g transform="translate(79.130357 43.415677) scale(0.081 -0.081)">
+     <g style="fill: #222222" transform="translate(79.130357 43.415677) scale(0.081 -0.081)">
       <defs>
        <path id="DejaVuSans-24" d="M 2188 4044 
 L 1331 1722 
@@ -1226,7 +1226,7 @@ L 72.650357 52.73131
     </g>
     <g id="text_15">
      <!-- AggreVaTe -->
-     <g transform="translate(79.130357 55.56631) scale(0.081 -0.081)">
+     <g style="fill: #222222" transform="translate(79.130357 55.56631) scale(0.081 -0.081)">
       <defs>
        <path id="DejaVuSans-39" d="M 1831 0 
 L 50 4666 
@@ -1261,7 +1261,7 @@ L 72.650357 64.881943
     </g>
     <g id="text_16">
      <!-- BC -->
-     <g transform="translate(79.130357 67.716943) scale(0.081 -0.081)">
+     <g style="fill: #222222" transform="translate(79.130357 67.716943) scale(0.081 -0.081)">
       <defs>
        <path id="DejaVuSans-25" d="M 1259 2228 
 L 1259 519 

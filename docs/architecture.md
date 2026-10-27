@@ -55,3 +55,26 @@ Figure creation is reproducible for a fixed environment and inputs; PDF/SVG time
 metadata and SVG IDs are stabilized by package-managed export. Concurrent Matplotlib
 use across threads is not supported; use separate processes. Native artist edits
 remain possible and callers must repeat validation after their own changes.
+
+## Architecture diagrams (0.2)
+
+`DiagramSpec` models nodes, directed edges and groups separately from tabular
+`FigureSpec`. The public `render`, `validate` and YAML loader dispatch on that
+explicit semantic choice; the CLI commands remain unchanged. Both paths use
+scoped Matplotlib styling and the same PDF/SVG/PNG exporter. A separate lightweight
+`DiagramResult` exposes native artists and geometry without forcing a graph into
+a DataFrame or adding a generic rendering-backend hierarchy.
+
+Manual coordinates work with core dependencies alone. Optional Graphviz supplies
+geometry through its JSON output; it does not render the final figure. Internal
+DOT IDs and quoted labels keep user text separate from graph syntax. The subprocess
+has a timeout and actionable dependency errors. Layout sidecars record geometry,
+the source spec, scifig/Matplotlib versions and the external engine version.
+Typography remains in final-size points even as geometry fits the requested
+canvas, so crowding is diagnosed rather than hidden through automatic font shrinking.
+
+Known identity/add shape contradictions and declared feedforward cycles fail;
+missing shapes and unverifiable symbolic dimensions remain advisory. Membership
+is flat and disjoint. Visual checks inspect label fit, node/group overlap and
+routes crossing unrelated nodes. Complex manual routing, nested groups, general
+shape inference and tracing code into a graph are deliberately outside this slice.

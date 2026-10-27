@@ -321,7 +321,7 @@ z
     </g>
     <g id="text_4">
      <!-- Method -->
-     <g transform="translate(121.103242 195.356244) scale(0.09 -0.09)">
+     <g style="fill: #222222" transform="translate(121.103242 195.356244) scale(0.09 -0.09)">
       <defs>
        <path id="DejaVuSans-30" d="M 628 4666 
 L 1569 4666 
@@ -744,7 +744,7 @@ z
     </g>
     <g id="text_11">
      <!-- Success (%) -->
-     <g transform="translate(10.69299 120.50082) rotate(-90) scale(0.09 -0.09)">
+     <g style="fill: #222222" transform="translate(10.69299 120.50082) rotate(-90) scale(0.09 -0.09)">
       <defs>
        <path id="DejaVuSans-36" d="M 3425 4513 
 L 3425 3897 
@@ -1189,7 +1189,7 @@ z
    </g>
    <g id="text_12">
     <!-- Synthetic: run distribution -->
-    <g transform="translate(79.161836 10.92024) scale(0.09 -0.09)">
+    <g style="fill: #222222" transform="translate(79.161836 10.92024) scale(0.09 -0.09)">
      <defs>
       <path id="DejaVuSans-5c" d="M 2059 -325 
 Q 1816 -950 1584 -1140 

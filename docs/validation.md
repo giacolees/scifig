@@ -1,7 +1,9 @@
 # Validation record
 
-Verified locally on 2026-10-27, macOS arm64. CI is configured for Linux and macOS,
-Python 3.11–3.13; the remote workflow has not been run in this session.
+Verified locally on 2026-10-27, macOS arm64. The initial 0.1 checks are recorded
+below; the 0.2 diagram extension is recorded at the end. The original remote CI
+[passed on Linux and macOS](https://github.com/giacolees/scifig/actions/runs/40590120436).
+CI covers Python 3.11–3.13.
 
 ## Automated checks
 
@@ -92,5 +94,35 @@ uv build
   settings temporarily; use separate processes for concurrent rendering.
 - Custom templates reuse a registered built-in data contract. Novel contracts
   require an explicit semantic validator change; they cannot bypass validation.
-- The source tree and distributions are ready locally; no remote repository,
+- Source is published on [GitHub](https://github.com/giacolees/scifig). No
   package-index release or live agent-host installation was performed.
+
+## Architecture extension (0.2)
+
+All **83 tests passed** in both the locked Python 3.12/Matplotlib 3.11 environment
+and the independently installed Python 3.11 wheel with Matplotlib 3.9.4, NumPy
+1.26.4, pandas 2.2.3 and Pydantic 2.9.2. Ruff and wheel/source builds passed.
+Graphviz dot 14.0.2 was used locally; CI installs the external layout tool and
+renders the diagram gallery as well as the original scientific plots.
+
+New checks cover graph IDs/endpoints, group membership, feedforward cycles,
+explicit-operation input counts and concrete shape conflicts, symbolic/missing
+shape advisories, cardinal ports, routed self-loops, layout timeouts and missing
+dependencies, safe DOT labels, manual layout without Graphviz, and malformed
+tool output. Rendering checks cover real arrow artists, distinct edge styles,
+text/geometry positions, input and global-style isolation, dark caller themes,
+label/group overlap, routes crossing unrelated nodes, vector output and PDF font
+embedding, JSON metadata, CLI sidecars, and Python/YAML byte-identical exports.
+
+Three illustrative diagrams are available as PDF/SVG/PNG with layout JSON:
+an ML pipeline, an encoder–decoder with skip connection, and training/inference
+boundaries. They were rendered and visually inspected. Final diagnostics are
+empty for these deliberately explicit examples; the separate source-derived
+skill trial retains its missing-tensor-shape caveat. See the
+[diagram gallery](diagrams.md) and [skill trial](diagram-skill-validation.md).
+
+Diagram validation checks declarations, not execution of a network or correctness
+of an architecture inferred from prose. General tracing, nested groups, manual
+bend points and concat shape inference remain unsupported. Automatic layout can
+vary across Graphviz versions; preserve the spec and recorded tool versions.
+The JSON sidecar records generated geometry and is not a replay input format.

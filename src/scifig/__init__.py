@@ -7,7 +7,8 @@ from typing import Any
 
 from scifig import templates as _templates  # noqa: F401 (register built-ins)
 from scifig.core.data import DataError, DataSource
-from scifig.core.registry import list_templates, register_template
+from scifig.core.registry import list_templates as _list_plot_templates
+from scifig.core.registry import register_template
 from scifig.core.specs import (
     AnnotationSpec,
     BoundsSpec,
@@ -16,20 +17,28 @@ from scifig.core.specs import (
     StyleSpec,
     load_spec,
 )
+from scifig.diagrams.rendering import DiagramResult
+from scifig.diagrams.specs import DiagramSpec, EdgeSpec, GroupSpec, NodeSpec
 from scifig.rendering.matplotlib import FigureResult, FigureWarning, render, validate
 from scifig.styles import list_styles
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __all__ = [
     "AnnotationSpec",
     "BoundsSpec",
     "DataError",
     "ExportSpec",
+    "DiagramSpec",
+    "DiagramResult",
+    "NodeSpec",
+    "EdgeSpec",
+    "GroupSpec",
     "FigureResult",
     "FigureSpec",
     "FigureWarning",
     "StyleSpec",
     "ablation",
+    "architecture",
     "benchmark",
     "distribution",
     "heatmap",
@@ -41,6 +50,24 @@ __all__ = [
     "render",
     "validate",
 ]
+
+
+def list_templates() -> list[str]:
+    """List the scientific plot templates and the architecture diagram family."""
+    return sorted([*_list_plot_templates(), "architecture"])
+
+
+def architecture(
+    nodes: dict[str, NodeSpec | dict[str, Any]],
+    edges: list[EdgeSpec | dict[str, Any]] | None = None,
+    **kwargs: Any,
+) -> DiagramResult:
+    """Draw nodes and connections with manual positions or optional Graphviz layout.
+
+    Sizes and manual positions use nominal inches; the whole layout fits the
+    requested canvas while typography retains its final point size.
+    """
+    return render(DiagramSpec(nodes=nodes, edges=[] if edges is None else edges, **kwargs))
 
 
 def _plot(kind: str, data: DataSource, x: str, y: str, **kwargs: Any) -> FigureResult:

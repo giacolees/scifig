@@ -1,0 +1,21 @@
+diagram:
+  title: 'Illustrative encoder–decoder with skip connection'
+  layout: manual
+  direction: left_to_right
+  feedforward: true
+  nodes:
+    input: {label: Input, role: input, position: [0, 1], shape: [batch, channels]}
+    encoder: {label: Encoder, role: module, position: [2, 1], shape: [batch, features]}
+    decoder: {label: Decoder, role: module, position: [4, 1], shape: [batch, features]}
+    skip: {label: Skip, role: operation, operation: identity, position: [3, 2.3], shape: [batch, features]}
+    add: {label: Add, role: operation, operation: add, position: [6, 1], shape: [batch, features]}
+    output: {label: Output, role: output, position: [8, 1], shape: [batch, features]}
+  edges:
+    - {source: input, target: encoder}
+    - {source: encoder, target: decoder}
+    - {source: encoder, target: skip, source_port: n, target_port: w}
+    - {source: skip, target: add, source_port: e, target_port: n}
+    - {source: decoder, target: add}
+    - {source: add, target: output}
+  style: {preset: publication, width: double_column, height: 2.3}
+  export: {directory: ../../docs/gallery, stem: diagrams_encoder_decoder, formats: [pdf, svg, png], dpi: 300}
