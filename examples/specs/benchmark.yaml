@@ -1,0 +1,18 @@
+figure:
+  type: benchmark
+  data: ../data/benchmark.csv
+  x: task
+  y: success_pct
+  group: method
+  legend_loc: outside upper center
+  legend_columns: 3
+  order: [Reach, Push, Place]
+  group_order: [DAgger, AggreVaTe, BC]
+  labels: {x: Task, y: Success, title: 'Synthetic: task benchmark', legend: Method}
+  units: {y: '%'}
+  style:
+    preset: publication
+    width: double_column
+    height: 2.8
+    colors: {DAgger: '#0072B2', AggreVaTe: '#D55E00', BC: '#009E73'}
+  export: {directory: ../../docs/gallery, stem: benchmark, formats: [pdf, svg, png], dpi: 300}

@@ -1,0 +1,14 @@
+figure:
+  type: ablation
+  data: ../data/ablation.csv
+  x: component
+  y: success_pct
+  order: [Full, No aggregation, No feedback, BC only]
+  labels: {x: Configuration, y: Success, title: 'Synthetic: ablation'}
+  units: {y: '%'}
+  style:
+    preset: publication
+    width: double_column
+    height: 2.8
+    colors: {Full: '#0072B2', No aggregation: '#D55E00', No feedback: '#009E73', BC only: '#CC79A7'}
+  export: {directory: ../../docs/gallery, stem: ablation, formats: [pdf, svg, png], dpi: 300}

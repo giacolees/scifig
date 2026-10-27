@@ -1,0 +1,16 @@
+figure:
+  type: learning_curve
+  data: ../data/learning_curve.csv
+  x: iteration
+  y: success_pct
+  group: method
+  group_order: [DAgger, AggreVaTe, BC]
+  uncertainty: std
+  labels: {x: Training, y: Success, title: 'Synthetic: imitation learning', legend: 'Method (mean ± SD)'}
+  units: {x: iterations, y: '%'}
+  style:
+    preset: publication
+    width: single_column
+    height: 2.8
+    colors: {DAgger: '#0072B2', AggreVaTe: '#D55E00', BC: '#009E73'}
+  export: {directory: ../../docs/gallery, stem: learning_curve, formats: [pdf, svg, png], dpi: 300}

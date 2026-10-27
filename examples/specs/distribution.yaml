@@ -1,0 +1,14 @@
+figure:
+  type: distribution
+  data: ../data/distribution.csv
+  x: method
+  y: success_pct
+  order: [DAgger, AggreVaTe, BC]
+  labels: {x: Method, y: Success, title: 'Synthetic: run distribution'}
+  units: {y: '%'}
+  style:
+    preset: publication
+    width: single_column
+    height: 2.8
+    colors: {DAgger: '#0072B2', AggreVaTe: '#D55E00', BC: '#009E73'}
+  export: {directory: ../../docs/gallery, stem: distribution, formats: [pdf, svg, png], dpi: 300}

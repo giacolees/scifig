@@ -1,0 +1,4 @@
+# Generated Matplotlib SVG path lines contain intentional trailing spaces.
+*.svg -whitespace
+# Keep tabular examples portable across checkout platforms.
+*.csv text eol=lf

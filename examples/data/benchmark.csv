@@ -1,0 +1,10 @@
+task,method,success_pct
+Reach,DAgger,81
+Reach,AggreVaTe,75
+Reach,BC,63
+Push,DAgger,72
+Push,AggreVaTe,68
+Push,BC,52
+Place,DAgger,65
+Place,AggreVaTe,60
+Place,BC,45

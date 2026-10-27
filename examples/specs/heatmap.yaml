@@ -1,0 +1,13 @@
+figure:
+  type: heatmap
+  data: ../data/heatmap.csv
+  x: task
+  y: method
+  row_order: [DAgger, AggreVaTe, BC]
+  value: success_pct
+  order: [Reach, Push, Place]
+  labels: {x: Task, y: Method, title: 'Synthetic: task success', colorbar: Success}
+  units: {value: '%'}
+  annotate: true
+  style: {preset: publication, width: single_column, height: 2.8}
+  export: {directory: ../../docs/gallery, stem: heatmap, formats: [pdf, svg, png], dpi: 300}
