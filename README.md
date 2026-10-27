@@ -1,23 +1,52 @@
 # scifig
 
-[![checks](https://github.com/giacolees/scifig/actions/workflows/ci.yml/badge.svg)](https://github.com/giacolees/scifig/actions/workflows/ci.yml)
+**Scientific plots and architecture diagrams from reproducible Python or YAML.**
 
-Create reproducible, publication-sized scientific figures from Python or YAML.
-Five Matplotlib templates share one validation, style and export engine. A separate
-agent skill supports Codex and Claude Code without an LLM dependency in the library.
-Architecture diagrams use an explicit graph of nodes, connections and boundaries,
-with optional Graphviz layout and the same Matplotlib vector rendering and styles.
+[![Checks](https://github.com/giacolees/scifig/actions/workflows/ci.yml/badge.svg)](https://github.com/giacolees/scifig/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](pyproject.toml)
+[![MIT license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+scifig turns research tables and explicit architecture graphs into publication-sized
+Matplotlib figures. Python, YAML and a coding-agent skill share the same validation,
+styling and export machinery. The core library has no LLM dependency.
+
+[Quick start](#quick-start) · [Python](#python-api) · [YAML](#declarative-yaml) ·
+[Diagrams](#architecture-diagrams) · [Gallery](#gallery) · [Coding agents](#coding-agents)
+
+| Learning dynamics | Training and inference |
+| :---: | :---: |
+| [![Synthetic learning curves with mean and standard-deviation bands](docs/gallery/learning_curve.png)](docs/gallery.md) | [![Illustrative training and inference system with distinct data, gradient and control connections](docs/gallery/diagrams_training_inference.png)](docs/diagrams.md) |
+
+*Numerical examples use synthetic data. Architecture examples are illustrative;
+none establishes a real comparison between methods.*
+
+## Quick start
+
+Requires **Python 3.11+**. Install from this repository with
+[uv](https://docs.astral.sh/uv/):
 
 ```bash
 git clone https://github.com/giacolees/scifig.git
 cd scifig
-python -m pip install -e .
-scifig render examples/specs/learning_curve.yaml
-python examples/make_gallery.py
+uv sync --locked
+
+# Render a learning curve from the supplied synthetic CSV.
+uv run scifig render examples/specs/learning_curve.yaml
+
+# Render a model diagram without installing Graphviz.
+uv run scifig render examples/diagrams/encoder_decoder.yaml
 ```
 
-Or use the locked development environment: `uv sync --extra dev`, then prefix
-commands with `uv run`. Python 3.11+ is required. Rendering works headlessly.
+Both commands write **PDF, SVG and PNG** to `docs/gallery/`, along with a resolved
+YAML specification. Diagrams also save a layout JSON record. Rendering works in
+headless environments.
+
+Using pip instead? In an activated virtual environment, run
+`python -m pip install -e .`, then use `scifig` and `python` without the `uv run` prefix.
+
+## Python API
+
+Pass a CSV/TSV path, pandas DataFrame, column mapping or list of records:
 
 ```python
 from scifig import learning_curve
@@ -28,125 +57,195 @@ result = learning_curve(
     y="success_pct",
     group="method",
     uncertainty="std",
-    style="neurips",
-    labels={"x": "Training iteration", "y": "Success (%)", "title": "Synthetic learning dynamics"},
+    labels={
+        "x": "Training iteration",
+        "y": "Success (%)",
+        "title": "Synthetic learning dynamics",
+        "legend": "Method (mean ± SD)",
+    },
+    style={
+        "preset": "neurips",
+        "height": 2.8,
+        "colors": {"DAgger": "#0072B2", "AggreVaTe": "#D55E00", "BC": "#009E73"},
+    },
 )
-result.savefig("figures/learning_curve.pdf")
 result.export("figures", stem="learning_curve")  # PDF, SVG, PNG
-# Native Matplotlib objects remain editable:
-ax, fig = result.ax, result.figure
 ```
 
-The example data is **synthetic**, not evidence of real method performance.
+Here, `std` explicitly requests a mean and one sample standard deviation at each
+iteration. Keep the source data and code with the outputs. Native Matplotlib
+objects remain available as `result.figure` and `result.ax`; review caveats in
+`result.diagnostics`.
+
+Styles are configuration: choose `publication`, `neurips` or `journal`, then set
+physical width, height, fonts, colors or rc overrides. Presets are starting points,
+not guarantees of venue compliance. See the [API guide](docs/api.md).
+
+## Declarative YAML
+
+Save this as `figure.yaml` in the repository root:
 
 ```yaml
 figure:
   type: learning_curve
-  data: ../data/learning_curve.csv
+  data: examples/data/learning_curve.csv
   x: iteration
   y: success_pct
   group: method
   uncertainty: std
-  labels: {x: Training iteration, y: 'Success (%)', title: Synthetic learning dynamics}
-  style: {preset: neurips, width: single_column}
-  export: {formats: [pdf, svg, png], directory: ../../figures, stem: learning_curve}
+  labels:
+    x: Training iteration
+    y: Success (%)
+    title: Synthetic learning dynamics
+  style:
+    preset: neurips
+    width: single_column
+    height: 2.8
+    colors:
+      DAgger: '#0072B2'
+      AggreVaTe: '#D55E00'
+      BC: '#009E73'
+  export:
+    directory: figures
+    stem: learning_curve
+    formats: [pdf, svg, png]
 ```
-
-Paths are relative to the YAML file. `scifig render` also saves a resolved YAML
-specification alongside the outputs; keep its source data to reproduce the figure.
 
 ```bash
-scifig validate examples/specs/learning_curve.yaml
-scifig templates list
-scifig styles list
+uv run scifig validate figure.yaml
+uv run scifig render figure.yaml
+uv run scifig templates list
+uv run scifig styles list
 ```
 
-Create a diagram using the same CLI:
+Paths resolve relative to the YAML file. Unknown options, duplicate YAML keys,
+malformed rows and invalid numeric values fail with actionable errors.
+`validate` checks the specification and its inputs; `render` also checks the drawn
+figure for visual issues.
 
-```bash
-scifig render examples/diagrams/encoder_decoder.yaml
-```
+## Architecture diagrams
 
-The manual-layout example needs no additional dependency. For automatic routing,
-install the external [Graphviz](https://graphviz.org/download/) `dot` executable,
-then run `python examples/make_diagram_gallery.py`.
+Describe components and connections explicitly. Manual positioning needs only the
+core dependencies:
 
 ```python
 from scifig import architecture
 
 result = architecture(
     nodes={
-        "x": {"label": "Input", "role": "input", "position": [0, 0]},
-        "model": {"label": "Encoder", "position": [2, 0]},
+        "input": {"label": "Input", "role": "input", "position": [0, 0]},
+        "encoder": {"label": "Encoder", "position": [2, 0]},
+        "output": {"label": "Output", "role": "output", "position": [4, 0]},
     },
-    edges=[{"source": "x", "target": "model"}],
+    edges=[
+        {"source": "input", "target": "encoder"},
+        {"source": "encoder", "target": "output"},
+    ],
     layout="manual",
 )
 result.export("figures", stem="architecture")
+result.save_layout("figures/architecture.layout.json")
 ```
 
-[Diagram guide and three examples](docs/diagrams.md) cover pipelines, skip
-connections, and training/inference boundaries. Diagram validation checks the
-supplied graph; it does not infer an architecture or unspecified tensor sizes.
+For automatic placement and routing, install the external
+[Graphviz `dot` executable](https://graphviz.org/download/) and choose
+`layout="graphviz"` without manual positions. Graphviz supplies geometry;
+Matplotlib renders the final vector artwork.
 
-| Template | Long-table columns | Statistical behavior |
+Diagrams support groups, cardinal ports, skip connections, frozen modules, and
+distinct data, gradient, control and feedback edges. Validation checks endpoints,
+membership, declared feedforward cycles and supported explicit tensor shapes.
+It does not trace a model or infer missing dimensions. The layout JSON records
+geometry, the spec and tool versions; it is not a replay input format.
+
+See the [diagram guide](docs/diagrams.md) for YAML, styling and current limitations.
+
+## Gallery
+
+Every preview has an executable source specification and vector exports.
+
+| Example | Source | Vector output |
 | --- | --- | --- |
-| `learning_curve` | numeric `x`, `y`, optional `group` | Sorted trajectories and optional uncertainty bands |
-| `benchmark` | categorical `x`, numeric `y`, optional `group` | Grouped bars, optional intervals; complete group grid |
-| `ablation` | categorical `x`, numeric `y` | Ordered bars with optional values and intervals |
-| `distribution` | categorical `x`, numeric `y` | Tukey boxplots and every raw observation |
-| `heatmap` | categorical `x`, `y`, numeric `value` | Vector cells in a complete rectangular grid |
+| [Learning curves](docs/gallery/learning_curve.png) | [YAML](examples/specs/learning_curve.yaml) · [Python](examples/python_api.py) | [PDF](docs/gallery/learning_curve.pdf) · [SVG](docs/gallery/learning_curve.svg) |
+| [Grouped benchmarks](docs/gallery/benchmark.png) | [YAML](examples/specs/benchmark.yaml) | [PDF](docs/gallery/benchmark.pdf) · [SVG](docs/gallery/benchmark.svg) |
+| [Ablation studies](docs/gallery/ablation.png) | [YAML](examples/specs/ablation.yaml) | [PDF](docs/gallery/ablation.pdf) · [SVG](docs/gallery/ablation.svg) |
+| [Distribution comparisons](docs/gallery/distribution.png) | [YAML](examples/specs/distribution.yaml) | [PDF](docs/gallery/distribution.pdf) · [SVG](docs/gallery/distribution.svg) |
+| [Heatmaps](docs/gallery/heatmap.png) | [YAML](examples/specs/heatmap.yaml) | [PDF](docs/gallery/heatmap.pdf) · [SVG](docs/gallery/heatmap.svg) |
+| [ML pipeline](docs/gallery/diagrams_ml_pipeline.png) | [YAML](examples/diagrams/ml_pipeline.yaml) | [PDF](docs/gallery/diagrams_ml_pipeline.pdf) · [SVG](docs/gallery/diagrams_ml_pipeline.svg) |
+| [Encoder–decoder with skip connection](docs/gallery/diagrams_encoder_decoder.png) | [YAML](examples/diagrams/encoder_decoder.yaml) | [PDF](docs/gallery/diagrams_encoder_decoder.pdf) · [SVG](docs/gallery/diagrams_encoder_decoder.svg) |
+| [Training and inference system](docs/gallery/diagrams_training_inference.png) | [YAML](examples/diagrams/training_inference.yaml) | [PDF](docs/gallery/diagrams_training_inference.pdf) · [SVG](docs/gallery/diagrams_training_inference.svg) |
 
-![Synthetic learning dynamics](docs/gallery/learning_curve.png)
+Regenerate the plots with `uv run python examples/make_gallery.py`. With Graphviz
+installed, regenerate the diagrams with `uv run python examples/make_diagram_gallery.py`.
 
-[Five-family gallery](docs/gallery.md) · [Getting started](docs/getting-started.md) ·
-[API and specification](docs/api.md) · [Agent skill](skills/scientific-figures/SKILL.md) ·
-[Contributing](docs/contributing.md) · [Research and licenses](docs/research.md) ·
-[Architecture](docs/architecture.md) · [Validation results](docs/validation.md)
+## Coding agents
 
-No aggregation, smoothing, dropping or imputation occurs silently. Duplicate
-summary cells require explicit `aggregate: mean|median` or sample uncertainty.
-`std` is sample SD, `sem` is SD/√n, and `ci95` is mean ± 1.96 SEM with an
-assumption warning. None establishes independent runs or inferential validity.
-Provided `{lower: lo, upper: hi}` bounds are absolute endpoints. Distribution
-whiskers are 1.5 IQR, not confidence intervals.
+The [scientific-figures skill](skills/scientific-figures/SKILL.md) gives coding agents
+such as Codex and Claude Code a bounded workflow: inspect the inputs and objective,
+choose a template, preserve executable sources, render, inspect the PNG, and make
+at most two revision renders. Quantitative results, connections and tensor sizes
+must come from supplied evidence.
 
-Presets (`publication`, `neurips`, `journal`) are configurable starting dimensions,
-not venue compliance claims. Fonts, widths, palettes, labels, legend placement and
-Matplotlib rc settings can be changed without modifying templates. PDF embeds
-TrueType fonts; SVG defaults to font paths. Use an explicit category-to-color map
-across related figures. Automatic stable hashes can collide and warn.
+Example request:
 
-```text
-src/scifig/
-  core/           # validated specs, table ingestion, callable registry
-  diagrams/       # graph specs, optional layout, vector artists and diagnostics
-  styles/         # physical sizes, typography, palettes
-  templates/      # five small plotting functions
-  rendering/      # common engine, editable result, scoped vector/raster export
-  validation/     # scientific contracts and rendered-geometry diagnostics
-  cli.py
-skills/scientific-figures/SKILL.md
-examples/         # synthetic CSVs, YAML specs and executable Python
-tests/            # validation, rendering, export, CLI and image checks
-docs/             # research, architecture, guides and actual gallery exports
-.github/workflows/ci.yml
-pyproject.toml
-uv.lock
+> Create a publication-ready learning curve comparing DAgger, AggreVaTe and BC
+> from experiments.csv. Explain the uncertainty bands and preserve the Python,
+> specification, PDF, SVG and PNG.
+
+For a diagram, supply the relevant code or an explicit architecture description.
+See [skill installation and usage](docs/getting-started.md#agent-skill) for host-specific
+instructions. Local workflow trials are recorded for [plots](docs/skill-validation.md)
+and [diagrams](docs/diagram-skill-validation.md); live host discovery was not tested.
+
+## Scientific and visual checks
+
+- **Explicit statistics.** No silent dropping, imputation, smoothing or aggregation.
+  Duplicate summary cells require an explicit aggregation choice or uncertainty.
+- **Defined uncertainty.** `std` uses sample SD; `sem` uses SD/√n; `ci95` uses
+  mean ± 1.96 SEM with an assumption warning. Supplied bounds are absolute endpoints.
+  Boxplot whiskers reach the furthest observations within 1.5 IQR of each quartile.
+- **Inspectable encodings.** Limits that clip data, truncated bar axes, saturated
+  heatmap colors and ambiguous color mappings produce diagnostics; invalid log
+  scales fail validation.
+- **Final-size output.** Configurable physical dimensions, embedded TrueType PDF
+  fonts, SVG font paths and redundant markers/dashes/hatches support publication use.
+  Layout checks report clipping, crowding and diagram collisions.
+
+Checks cannot establish experimental independence, scientific validity or venue
+compliance. Inspect the preview at final size. Output is repeatable within a fixed
+dependency/font environment; use separate processes for concurrent Matplotlib
+rendering. Bootstrap intervals, paired-run inference, multi-panel composition,
+nested diagram groups and automatic model tracing are outside the current scope.
+
+## Documentation and development
+
+| Guide | Contents |
+| --- | --- |
+| [Getting started](docs/getting-started.md) | Installation, data conventions and agent skill setup |
+| [Python and YAML API](docs/api.md) | Column roles, statistics, styles and export options |
+| [Architecture diagrams](docs/diagrams.md) | Graph specifications, layouts and validation |
+| [Contributing](docs/contributing.md) | Adding templates and checking visual changes |
+| [Architecture decisions](docs/architecture.md) | Separation of concerns and extension contracts |
+| [Validation record](docs/validation.md) | Tested environments, exports and known limitations |
+| [Reference research](docs/research.md) | Sources, techniques and licensing constraints |
+
+```bash
+uv sync --locked --extra dev
+uv run pytest -q
+uv run ruff check .
+uv run ruff format --check .
+uv build
 ```
 
-Run checks with `uv run pytest -q`, `uv run ruff check .`, and
-`uv run ruff format --check .`. Build a wheel and source archive with `uv build`.
+GitHub Actions runs the tests, renders both galleries and builds the distributions
+on Linux and macOS with Python 3.11–3.13. For bugs and feature requests, use
+[GitHub Issues](https://github.com/giacolees/scifig/issues).
 
-Initial scope: one axes per figure (plus a heatmap colorbar), CSV/TSV/in-memory
-tables, three simple uncertainty estimators, and one architecture diagram family.
-Rendering uses Matplotlib; optional Graphviz provides diagram geometry. Layout diagnostics
-are heuristics; inspect previews at final publication size. Use separate processes
-for concurrent rendering because Matplotlib settings are process-global. Output is
-repeatable within a fixed dependency/font environment; cross-platform bytes can
-differ. Next additions should be driven by real data: paired-run identifiers,
-bootstrap intervals, multi-panel composition and more flexible missing-cell handling.
+## License and references
 
-MIT-licensed original code. No code, data, images or fonts from the reference
-repositories are vendored. Their distinct licensing constraints are recorded in
-[research.md](docs/research.md).
+scifig's original code is [MIT licensed](LICENSE). Its design draws on
+[figures4papers](https://github.com/ChenLiu-1996/figures4papers),
+[Nicolas P. Rougier's Scientific Visualization book](https://github.com/rougier/scientific-visualization-book)
+and [ResearchFigure](https://github.com/DaoD/ResearchFigure).
+No source code, fonts, datasets or figures from those projects are vendored;
+see the [research and licensing review](docs/research.md) for attribution and constraints.
