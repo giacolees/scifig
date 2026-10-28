@@ -1,0 +1,44 @@
+{
+  "encoder_decoder": {
+    "size": [
+      700,
+      230
+    ],
+    "pixels_identical": true
+  },
+  "manual_ports_loop": {
+    "size": [
+      700,
+      300
+    ],
+    "pixels_identical": true
+  },
+  "ml_pipeline": {
+    "size": [
+      700,
+      140
+    ],
+    "pixels_identical": true
+  },
+  "research_workflow": {
+    "size": [
+      700,
+      250
+    ],
+    "pixels_identical": true
+  },
+  "residual_block": {
+    "size": [
+      700,
+      250
+    ],
+    "pixels_identical": true
+  },
+  "training_inference": {
+    "size": [
+      700,
+      400
+    ],
+    "pixels_identical": true
+  }
+}

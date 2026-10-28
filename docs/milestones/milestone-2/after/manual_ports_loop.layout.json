@@ -1,0 +1,232 @@
+{
+  "bounds": [
+    -50.4,
+    -37.400000000000006,
+    410.4,
+    59.400000000000006
+  ],
+  "edges": [
+    {
+      "curved": false,
+      "end_point": null,
+      "label_position": [
+        90.0,
+        0.0
+      ],
+      "points": [
+        [
+          50.4,
+          0.0
+        ],
+        [
+          129.6,
+          0.0
+        ]
+      ]
+    },
+    {
+      "curved": false,
+      "end_point": null,
+      "label_position": [
+        270.0,
+        0.0
+      ],
+      "points": [
+        [
+          230.4,
+          0.0
+        ],
+        [
+          309.6,
+          0.0
+        ]
+      ]
+    },
+    {
+      "curved": true,
+      "end_point": null,
+      "label_position": [
+        266.4,
+        59.400000000000006
+      ],
+      "points": [
+        [
+          180.0,
+          23.400000000000002
+        ],
+        [
+          180.0,
+          59.400000000000006
+        ],
+        [
+          266.4,
+          59.400000000000006
+        ],
+        [
+          230.4,
+          0.0
+        ]
+      ]
+    }
+  ],
+  "engine": "manual",
+  "engine_version": null,
+  "figure_size_inches": [
+    7.0,
+    3.0
+  ],
+  "groups": {
+    "core": {
+      "bounds": [
+        115.6,
+        -37.400000000000006,
+        244.4,
+        45.400000000000006
+      ]
+    }
+  },
+  "matplotlib_version": "3.11.2",
+  "nodes": {
+    "input": {
+      "center": [
+        0.0,
+        0.0
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    },
+    "output": {
+      "center": [
+        360.0,
+        0.0
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    },
+    "state": {
+      "center": [
+        180.0,
+        0.0
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    }
+  },
+  "schema_version": 1,
+  "scifig_version": "0.2.0",
+  "spec": {
+    "direction": "left_to_right",
+    "edges": [
+      {
+        "kind": "data",
+        "label": "",
+        "source": "input",
+        "source_port": "e",
+        "target": "state",
+        "target_port": "w"
+      },
+      {
+        "kind": "data",
+        "label": "",
+        "source": "state",
+        "source_port": "e",
+        "target": "output",
+        "target_port": "w"
+      },
+      {
+        "kind": "feedback",
+        "label": "",
+        "source": "state",
+        "source_port": null,
+        "target": "state",
+        "target_port": null
+      }
+    ],
+    "export": {
+      "directory": "../../../../figures",
+      "dpi": 300,
+      "formats": [
+        "pdf",
+        "svg",
+        "png"
+      ],
+      "stem": "figure"
+    },
+    "feedforward": false,
+    "groups": {
+      "core": {
+        "label": "Core",
+        "nodes": [
+          "state"
+        ],
+        "role": "group"
+      }
+    },
+    "layout": "manual",
+    "nodes": {
+      "input": {
+        "frozen": false,
+        "label": "Input",
+        "operation": null,
+        "position": [
+          0.0,
+          0.0
+        ],
+        "role": "input",
+        "shape": null,
+        "size": [
+          1.4,
+          0.65
+        ]
+      },
+      "output": {
+        "frozen": false,
+        "label": "Output",
+        "operation": null,
+        "position": [
+          5.0,
+          0.0
+        ],
+        "role": "output",
+        "shape": null,
+        "size": [
+          1.4,
+          0.65
+        ]
+      },
+      "state": {
+        "frozen": false,
+        "label": "State",
+        "operation": null,
+        "position": [
+          2.5,
+          0.0
+        ],
+        "role": "module",
+        "shape": null,
+        "size": [
+          1.4,
+          0.65
+        ]
+      }
+    },
+    "style": {
+      "colors": {},
+      "font_family": null,
+      "font_size": null,
+      "height": 3.0,
+      "palette": "accessible",
+      "preset": "publication",
+      "rc": {},
+      "width": "double_column"
+    },
+    "title": "",
+    "type": "architecture"
+  }
+}

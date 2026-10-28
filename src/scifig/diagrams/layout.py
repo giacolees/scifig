@@ -5,8 +5,10 @@ import math
 import shutil
 import subprocess
 from dataclasses import dataclass
+from typing import Protocol
 
-from scifig.diagrams.specs import DiagramSpec
+from scifig.diagrams.ir import CanonicalDiagram
+from scifig.diagrams.specs import DiagramSpec, Port
 
 Point = tuple[float, float]
 Bounds = tuple[float, float, float, float]
@@ -58,7 +60,7 @@ def _bounds(nodes: list[NodeGeometry], padding: float = 0) -> Bounds:
     )
 
 
-def _port(node: NodeGeometry, other: Point, port: str | None) -> Point:
+def _port(node: NodeGeometry, other: Point, port: Port | None) -> Point:
     x, y = node.center
     w, h = node.size[0] / 2, node.size[1] / 2
     if port:
@@ -71,11 +73,11 @@ def _port(node: NodeGeometry, other: Point, port: str | None) -> Point:
     return x + dx * scale, y + dy * scale
 
 
-def _manual(spec: DiagramSpec) -> DiagramGeometry:
+def _manual(spec: CanonicalDiagram) -> DiagramGeometry:
     nodes = {
         key: NodeGeometry(tuple(v * 72 for v in node.position), tuple(v * 72 for v in node.size))
-        for key, node in spec.nodes.items()
-        if node.position is not None
+        for key in spec.nodes
+        if (node := spec.layout.nodes[key]).position is not None
     }
     edges = []
     for edge in spec.edges:
@@ -115,23 +117,22 @@ def _quote(value: str) -> str:
     return json.dumps(value.replace("\\", "\\\\"), ensure_ascii=False)
 
 
-def _dot(spec: DiagramSpec) -> tuple[str, dict[str, str], dict[str, str]]:
+def _dot(spec: CanonicalDiagram) -> tuple[str, dict[str, str], dict[str, str]]:
     ids = {name: f"n{i}" for i, name in enumerate(spec.nodes)}
     group_ids = {name: f"cluster_{i}" for i, name in enumerate(spec.groups)}
     lines = [
         "digraph G {",
-        f"rankdir={'LR' if spec.direction == 'left_to_right' else 'TB'};",
+        f"rankdir={'LR' if spec.layout.direction == 'left_to_right' else 'TB'};",
         'graph [nodesep=0.4, ranksep=0.55, pad=0.15, fontname="DejaVu Sans", fontsize=9];',
         'node [shape=box, fixedsize=true, fontname="DejaVu Sans", fontsize=9];',
     ]
-    for name, node in spec.nodes.items():
-        lines.append(
-            f"{ids[name]} [label={_quote(node.label)}, width={node.size[0]}, "
-            f"height={node.size[1]}];"
-        )
+    for name in spec.nodes:
+        node = spec.layout.nodes[name]
+        label = _quote(spec.presentation.node_labels[name])
+        lines.append(f"{ids[name]} [label={label}, width={node.size[0]}, height={node.size[1]}];")
     for name, group in spec.groups.items():
         lines.append(
-            f"subgraph {group_ids[name]} {{ label={_quote(group.label)}; "
+            f"subgraph {group_ids[name]} {{ label={_quote(spec.presentation.group_labels[name])}; "
             'fontname="DejaVu Sans"; fontsize=9; margin=14;'
         )
         lines.extend(f"{ids[node]};" for node in group.nodes)
@@ -139,7 +140,8 @@ def _dot(spec: DiagramSpec) -> tuple[str, dict[str, str], dict[str, str]]:
     for i, edge in enumerate(spec.edges):
         source = ids[edge.source] + (f":{edge.source_port}" if edge.source_port else "")
         target = ids[edge.target] + (f":{edge.target_port}" if edge.target_port else "")
-        lines.append(f'{source} -> {target} [scifig_index="{i}", label={_quote(edge.label)}];')
+        label = _quote(spec.presentation.edge_labels[i])
+        lines.append(f'{source} -> {target} [scifig_index="{i}", label={label}];')
     lines.append("}")
     return "\n".join(lines), ids, group_ids
 
@@ -149,7 +151,7 @@ def _pair(value: str) -> Point:
     return float(x), float(y)
 
 
-def _graphviz(spec: DiagramSpec) -> DiagramGeometry:
+def _graphviz(spec: CanonicalDiagram) -> DiagramGeometry:
     executable = shutil.which("dot")
     if executable is None:
         raise RuntimeError("Graphviz 'dot' is unavailable; install Graphviz or use manual layout")
@@ -210,21 +212,44 @@ def _graphviz(spec: DiagramSpec) -> DiagramGeometry:
         raise RuntimeError(f"Graphviz returned invalid layout data: {exc}") from exc
 
 
+class LayoutEngine(Protocol):
+    """Map validated canonical input to point geometry.
+
+    Adapters implement layout only. Use pipeline.layout_canonical (or layout_ir)
+    to revalidate mutable inputs and check returned geometry before consumption.
+    """
+
+    def layout(self, diagram: CanonicalDiagram) -> DiagramGeometry: ...
+
+
+class ManualLayoutEngine:
+    def layout(self, diagram: CanonicalDiagram) -> DiagramGeometry:
+        return _manual(diagram)
+
+
+class GraphvizLayoutEngine:
+    def layout(self, diagram: CanonicalDiagram) -> DiagramGeometry:
+        return _graphviz(diagram)
+
+
+def get_layout_engine(name: str) -> LayoutEngine:
+    """Select a supported layout engine."""
+    if name == "manual":
+        return ManualLayoutEngine()
+    if name == "graphviz":
+        return GraphvizLayoutEngine()
+    raise ValueError(f"unsupported layout engine: {name}")
+
+
+def layout_ir(diagram: CanonicalDiagram) -> DiagramGeometry:
+    """Compatibility entry point for canonical layout orchestration."""
+    from scifig.diagrams.pipeline import layout_canonical
+
+    return layout_canonical(diagram)
+
+
 def layout_diagram(spec: DiagramSpec) -> DiagramGeometry:
-    """Lay out a validated diagram, returning all geometry in points."""
-    geometry = _manual(spec) if spec.layout == "manual" else _graphviz(spec)
-    coordinates = list(geometry.bounds)
-    for node in geometry.nodes.values():
-        coordinates.extend((*node.center, *node.size))
-    for group in geometry.groups.values():
-        coordinates.extend(group.bounds)
-    for edge in geometry.edges:
-        for point in edge.points:
-            coordinates.extend(point)
-        if edge.label_position is not None:
-            coordinates.extend(edge.label_position)
-        if edge.end_point is not None:
-            coordinates.extend(edge.end_point)
-    if not all(math.isfinite(value) for value in coordinates):
-        raise RuntimeError("layout returned non-finite geometry")
-    return geometry
+    """Lay out a spec through the canonical pipeline, returning point geometry."""
+    from scifig.diagrams.pipeline import layout_diagram as run_pipeline
+
+    return run_pipeline(spec)

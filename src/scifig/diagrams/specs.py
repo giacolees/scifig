@@ -6,16 +6,24 @@ from pydantic import Field, field_validator, model_validator
 
 from scifig.core.specs import ExportSpec, StyleSpec, _Model
 
+NodeRole = Literal["input", "output", "module", "data", "store", "loss", "operation"]
+Operation = Literal["identity", "add", "concat"]
+EdgeKind = Literal["data", "gradient", "control", "feedback"]
+Port = Literal["n", "s", "e", "w"]
+GroupRole = Literal["group", "training", "inference"]
+Direction = Literal["left_to_right", "top_to_bottom"]
+LayoutName = Literal["graphviz", "manual"]
+
 
 class NodeSpec(_Model):
     """A diagram node; sizes and manual positions are measured in inches."""
 
     label: str
-    role: Literal["input", "output", "module", "data", "store", "loss", "operation"] = "module"
+    role: NodeRole = "module"
     position: tuple[float, float] | None = None
     size: tuple[float, float] = (1.4, 0.65)
     shape: tuple[int | str, ...] | None = None
-    operation: Literal["identity", "add", "concat"] | None = None
+    operation: Operation | None = None
     frozen: bool = False
 
     @field_validator("position", "size", "shape", mode="before")
@@ -44,9 +52,9 @@ class EdgeSpec(_Model):
     source: str
     target: str
     label: str = ""
-    kind: Literal["data", "gradient", "control", "feedback"] = "data"
-    source_port: Literal["n", "s", "e", "w"] | None = None
-    target_port: Literal["n", "s", "e", "w"] | None = None
+    kind: EdgeKind = "data"
+    source_port: Port | None = None
+    target_port: Port | None = None
 
 
 class GroupSpec(_Model):
@@ -54,7 +62,7 @@ class GroupSpec(_Model):
 
     label: str
     nodes: list[str]
-    role: Literal["group", "training", "inference"] = "group"
+    role: GroupRole = "group"
 
     @model_validator(mode="after")
     def valid_group(self) -> "GroupSpec":
@@ -72,8 +80,8 @@ class DiagramSpec(_Model):
     nodes: dict[str, NodeSpec]
     edges: list[EdgeSpec] = Field(default_factory=list)
     groups: dict[str, GroupSpec] = Field(default_factory=dict)
-    direction: Literal["left_to_right", "top_to_bottom"] = "left_to_right"
-    layout: Literal["graphviz", "manual"] = "graphviz"
+    direction: Direction = "left_to_right"
+    layout: LayoutName = "graphviz"
     feedforward: bool = False
     title: str = ""
     style: StyleSpec | str = Field(

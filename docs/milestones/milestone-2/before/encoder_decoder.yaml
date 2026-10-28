@@ -1,0 +1,146 @@
+diagram:
+  type: architecture
+  nodes:
+    input:
+      label: Input
+      role: input
+      position:
+      - 0.0
+      - 1.0
+      size:
+      - 1.4
+      - 0.65
+      shape:
+      - batch
+      - channels
+      operation: null
+      frozen: false
+    encoder:
+      label: Encoder
+      role: module
+      position:
+      - 2.0
+      - 1.0
+      size:
+      - 1.4
+      - 0.65
+      shape:
+      - batch
+      - features
+      operation: null
+      frozen: false
+    decoder:
+      label: Decoder
+      role: module
+      position:
+      - 4.0
+      - 1.0
+      size:
+      - 1.4
+      - 0.65
+      shape:
+      - batch
+      - features
+      operation: null
+      frozen: false
+    skip:
+      label: Skip
+      role: operation
+      position:
+      - 3.0
+      - 2.3
+      size:
+      - 1.4
+      - 0.65
+      shape:
+      - batch
+      - features
+      operation: identity
+      frozen: false
+    add:
+      label: Add
+      role: operation
+      position:
+      - 6.0
+      - 1.0
+      size:
+      - 1.4
+      - 0.65
+      shape:
+      - batch
+      - features
+      operation: add
+      frozen: false
+    output:
+      label: Output
+      role: output
+      position:
+      - 8.0
+      - 1.0
+      size:
+      - 1.4
+      - 0.65
+      shape:
+      - batch
+      - features
+      operation: null
+      frozen: false
+  edges:
+  - source: input
+    target: encoder
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: encoder
+    target: decoder
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: encoder
+    target: skip
+    label: ''
+    kind: data
+    source_port: n
+    target_port: w
+  - source: skip
+    target: add
+    label: ''
+    kind: data
+    source_port: e
+    target_port: n
+  - source: decoder
+    target: add
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: add
+    target: output
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  groups: {}
+  direction: left_to_right
+  layout: manual
+  feedforward: true
+  title: "Illustrative encoder\u2013decoder with skip connection"
+  style:
+    preset: publication
+    width: double_column
+    height: 2.3
+    font_family: null
+    font_size: null
+    palette: accessible
+    colors: {}
+    rc: {}
+  export:
+    formats:
+    - pdf
+    - svg
+    - png
+    directory: .
+    stem: diagrams_encoder_decoder
+    dpi: 300

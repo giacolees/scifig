@@ -1,0 +1,85 @@
+diagram:
+  type: architecture
+  nodes:
+    input:
+      label: Input
+      role: input
+      position:
+      - 0.0
+      - 0.0
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+    state:
+      label: State
+      role: module
+      position:
+      - 2.5
+      - 0.0
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+    output:
+      label: Output
+      role: output
+      position:
+      - 5.0
+      - 0.0
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+  edges:
+  - source: input
+    target: state
+    label: ''
+    kind: data
+    source_port: e
+    target_port: w
+  - source: state
+    target: output
+    label: ''
+    kind: data
+    source_port: e
+    target_port: w
+  - source: state
+    target: state
+    label: ''
+    kind: feedback
+    source_port: null
+    target_port: null
+  groups:
+    core:
+      label: Core
+      nodes:
+      - state
+      role: group
+  direction: left_to_right
+  layout: manual
+  feedforward: false
+  title: ''
+  style:
+    preset: publication
+    width: double_column
+    height: 3.0
+    font_family: null
+    font_size: null
+    palette: accessible
+    colors: {}
+    rc: {}
+  export:
+    formats:
+    - pdf
+    - svg
+    - png
+    directory: .
+    stem: figure
+    dpi: 300

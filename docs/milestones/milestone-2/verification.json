@@ -1,0 +1,87 @@
+{
+  "verified_at_utc": "2026-10-28T17:10:22.317281+00:00",
+  "baseline_tests": 101,
+  "final_tests": {
+    "passed": 141,
+    "failed": 0,
+    "skipped": 0,
+    "command": ".venv/bin/pytest -q"
+  },
+  "ruff_lint": {
+    "passed": true,
+    "command": ".venv/bin/ruff check ."
+  },
+  "ruff_format": {
+    "passed": true,
+    "command": ".venv/bin/ruff format --check .",
+    "files_checked": 70
+  },
+  "package_build": {
+    "passed": true,
+    "command": ".venv/bin/python -m build",
+    "artifacts": [
+      "dist/scifig-0.2.0.tar.gz",
+      "dist/scifig-0.2.0-py3-none-any.whl"
+    ]
+  },
+  "typing_checker": {
+    "configured": false,
+    "validation": "annotations, strict Pydantic models and contract tests"
+  },
+  "visual_inspection": {
+    "completed": true,
+    "fixtures": 6,
+    "diagnostics": [],
+    "regressions_observed": false
+  },
+  "all_review_pdfs_embed_truetype": true,
+  "all_review_svgs_have_no_raster_images": true,
+  "before_after_byte_identity": {
+    "diagnostics.json": true,
+    "encoder_decoder.layout.json": true,
+    "encoder_decoder.pdf": true,
+    "encoder_decoder.png": true,
+    "encoder_decoder.svg": true,
+    "encoder_decoder.yaml": true,
+    "manual_ports_loop.layout.json": true,
+    "manual_ports_loop.pdf": true,
+    "manual_ports_loop.png": true,
+    "manual_ports_loop.svg": true,
+    "manual_ports_loop.yaml": true,
+    "ml_pipeline.layout.json": true,
+    "ml_pipeline.pdf": true,
+    "ml_pipeline.png": true,
+    "ml_pipeline.svg": true,
+    "ml_pipeline.yaml": true,
+    "research_workflow.layout.json": true,
+    "research_workflow.pdf": true,
+    "research_workflow.png": true,
+    "research_workflow.svg": true,
+    "research_workflow.yaml": true,
+    "residual_block.layout.json": true,
+    "residual_block.pdf": true,
+    "residual_block.png": true,
+    "residual_block.svg": true,
+    "residual_block.yaml": true,
+    "training_inference.layout.json": true,
+    "training_inference.pdf": true,
+    "training_inference.png": true,
+    "training_inference.svg": true,
+    "training_inference.yaml": true
+  },
+  "environment": {
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "python": "3.12.2",
+    "graphviz": "14.0.2 (20251019.1705)",
+    "matplotlib": "3.11.2",
+    "numpy": "2.5.4",
+    "pydantic": "2.14.1",
+    "pytest": "9.2.0",
+    "ruff": "0.17.3",
+    "build": "1.6.1",
+    "pypdf": "6.21.3",
+    "Pillow": "13.0.0"
+  },
+  "diagram_spec_json_schema_matches_baseline": true,
+  "built_wheel_import_and_render_smoke_test": "PASSED"
+}

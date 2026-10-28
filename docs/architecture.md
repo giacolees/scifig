@@ -78,3 +78,56 @@ missing shapes and unverifiable symbolic dimensions remain advisory. Membership
 is flat and disjoint. Visual checks inspect label fit, node/group overlap and
 routes crossing unrelated nodes. Complex manual routing, nested groups, general
 shape inference and tracing code into a graph are deliberately outside this slice.
+
+## Canonical diagram pipeline (Milestone 2)
+
+Diagrams now follow `DiagramSpec → CanonicalDiagram → LayoutEngine →
+DiagramGeometry → Matplotlib artists → validation`. The YAML schema, defaults,
+public `render(spec)` / `architecture(...)` APIs, and CLI remain compatible.
+`layout_diagram(spec)` and `render_diagram(spec)` remain available from their
+existing modules as wrappers around `diagrams.pipeline` orchestration.
+
+`diagrams.ir.diagram_to_ir` is the explicit conversion boundary. It serializes
+and revalidates mutable specifications, then copies semantic nodes, ordered
+edges, and flat groups into strict Pydantic models. Shared role, edge-kind,
+operation and cardinal-port types are reused. Node sizes/positions and layout
+engine/direction live in layout hints; labels/title live in presentation.
+Tensor shapes, operations, frozen flags and feedforward declarations retain
+their meaning. Edge indices are stable list indices, including parallel edges.
+Canonical validation checks references, disjoint membership, exact hint/label
+coverage, edge ordering and the existing semantic constraints. Optional internal
+metadata/provenance are copied without adding YAML keys or fabricating source
+locations. Canonical models contain no computed geometry or original `NodeSpec`.
+
+`pipeline.prepare_diagram` resolves style, colors and appearance without invoking
+an engine. `pipeline.layout_canonical` revalidates canonical input, selects
+`ManualLayoutEngine` or `GraphvizLayoutEngine` through a fixed dispatcher, and
+validates the returned geometry. `LayoutEngine` is a small typed protocol;
+adapters assume validated canonical input and implement layout only. New engines
+require an explicit dispatcher/schema change and contract tests; there is no
+plugin registry or new dependency. Manual positions and requested sizes are in
+inches and convert to points at layout (72 points/inch). All computed centers,
+sizes, route points, label positions, arrow tips and bounds use points. Cubic
+routes contain 1 + 3n points; arrow tips remain separate from spline controls.
+
+`diagrams.validation.validate_geometry` requires exact node/group coverage, edge
+count/order, finite coordinate pairs, positive sizes and ordered nondegenerate
+bounds. It checks routes, enclosing diagram bounds, and group containment of
+members. A 0.1 point containment tolerance accommodates Graphviz JSON rounding.
+Malformed engine output fails before drawing. Visual relationship checks live
+in the same validation module; the existing rendering-module import remains
+available. The checks retain their advisory, heuristic nature.
+
+`rendering.render_geometry` draws canonical content with validated geometry and
+resolved presentation settings. The original validated spec snapshot is retained
+on `DiagramResult` for export configuration and schema-version-1 sidecars;
+`result.diagram` additionally exposes the canonical snapshot. Existing positional
+result constructor arguments are preserved. `render_diagram(spec, geometry=...)`
+uses a validated copy of supplied geometry without invoking a layout engine.
+This is the supported entry point for reusing geometry; sidecars remain records,
+not a new input format. Callers who edit native artists must rerun visual checks.
+
+No typing checker is configured in this repository. Typed interfaces are covered
+by annotations and contract tests, rather than a claimed static type-check pass.
+The [Milestone 2 review report](milestones/milestone-2/review.md) records technical
+verification and the separate pending human approval gate.

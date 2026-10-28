@@ -1,0 +1,136 @@
+diagram:
+  type: architecture
+  nodes:
+    input:
+      label: Input
+      role: input
+      position:
+      - 0.0
+      - 0.0
+      size:
+      - 1.4
+      - 0.65
+      shape:
+      - B
+      - C
+      - H
+      - W
+      operation: null
+      frozen: false
+    transform:
+      label: Transform
+      role: module
+      position:
+      - 2.0
+      - 0.7
+      size:
+      - 1.4
+      - 0.65
+      shape:
+      - B
+      - C
+      - H
+      - W
+      operation: null
+      frozen: false
+    identity:
+      label: Identity
+      role: module
+      position:
+      - 2.0
+      - -0.7
+      size:
+      - 1.4
+      - 0.65
+      shape:
+      - B
+      - C
+      - H
+      - W
+      operation: identity
+      frozen: false
+    add:
+      label: Add
+      role: operation
+      position:
+      - 4.0
+      - 0.0
+      size:
+      - 1.4
+      - 0.65
+      shape:
+      - B
+      - C
+      - H
+      - W
+      operation: add
+      frozen: false
+    output:
+      label: Output
+      role: output
+      position:
+      - 6.0
+      - 0.0
+      size:
+      - 1.4
+      - 0.65
+      shape:
+      - B
+      - C
+      - H
+      - W
+      operation: null
+      frozen: false
+  edges:
+  - source: input
+    target: transform
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: input
+    target: identity
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: transform
+    target: add
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: identity
+    target: add
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: add
+    target: output
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  groups: {}
+  direction: left_to_right
+  layout: manual
+  feedforward: true
+  title: Residual block
+  style:
+    preset: editorial
+    width: double_column
+    height: 2.5
+    font_family: null
+    font_size: null
+    palette: accessible
+    colors: {}
+    rc: {}
+  export:
+    formats:
+    - pdf
+    - svg
+    - png
+    directory: .
+    stem: figure
+    dpi: 300

@@ -1,0 +1,98 @@
+diagram:
+  type: architecture
+  nodes:
+    question:
+      label: Research question
+      role: input
+      position:
+      - 0.0
+      - 0.0
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+    hypothesis:
+      label: Hypothesis
+      role: module
+      position:
+      - 2.0
+      - 0.0
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+    experiment:
+      label: Experiment
+      role: module
+      position:
+      - 4.0
+      - -0.7
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+    evidence:
+      label: Evidence
+      role: output
+      position:
+      - 6.0
+      - 0.0
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+  edges:
+  - source: question
+    target: hypothesis
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: hypothesis
+    target: experiment
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: experiment
+    target: evidence
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: evidence
+    target: hypothesis
+    label: Conceptual feedback
+    kind: feedback
+    source_port: n
+    target_port: n
+  groups: {}
+  direction: left_to_right
+  layout: manual
+  feedforward: false
+  title: Conceptual research workflow
+  style:
+    preset: editorial
+    width: double_column
+    height: 2.5
+    font_family: null
+    font_size: null
+    palette: accessible
+    colors: {}
+    rc: {}
+  export:
+    formats:
+    - pdf
+    - svg
+    - png
+    directory: .
+    stem: figure
+    dpi: 300

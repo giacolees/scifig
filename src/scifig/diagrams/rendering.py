@@ -2,7 +2,6 @@
 
 import json
 import os
-import warnings
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -18,13 +17,14 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 from matplotlib.path import Path as ArtistPath
 
-from scifig.diagrams._appearance import EDGE_STYLES, diagram_appearance
-from scifig.diagrams.layout import DiagramGeometry, EdgeGeometry, layout_diagram
-from scifig.diagrams.specs import DiagramSpec, validate_diagram
+from scifig.diagrams._appearance import EDGE_STYLES
+from scifig.diagrams.ir import CanonicalDiagram
+from scifig.diagrams.layout import DiagramGeometry, EdgeGeometry
+from scifig.diagrams.pipeline import ResolvedPresentation
+from scifig.diagrams.specs import DiagramSpec
+from scifig.diagrams.validation import check_diagram_visual  # noqa: F401 (compatibility)
 from scifig.rendering.export import export_figure, save_figure
-from scifig.rendering.matplotlib import FigureWarning
-from scifig.styles import ResolvedStyle, resolve_style
-from scifig.validation.visual import check_visual
+from scifig.styles import ResolvedStyle
 
 
 @dataclass
@@ -36,6 +36,7 @@ class DiagramResult:
     spec: DiagramSpec
     style: ResolvedStyle
     layout: DiagramGeometry
+    diagram: CanonicalDiagram | None = field(default=None, kw_only=True)
     diagnostics: list[str] = field(default_factory=list)
     node_artists: dict[str, FancyBboxPatch] = field(default_factory=dict)
     edge_artists: list[FancyArrowPatch] = field(default_factory=list)
@@ -104,25 +105,11 @@ class DiagramResult:
         return path
 
 
-def _node_colors(spec: DiagramSpec, style: ResolvedStyle) -> dict[str, str]:
-    if style.colors:
-        return style.color_map(list(spec.nodes))
-    appearance = diagram_appearance(style.preset)
-    return {
-        key: appearance.grayscale_node
-        if style.palette == "grayscale"
-        else appearance.role_colors[node.role]
-        for key, node in spec.nodes.items()
-    }
-
-
 def validate_diagram_config(spec: DiagramSpec) -> list[str]:
-    """Validate semantics and visual tokens without running a layout subprocess."""
-    # Revalidate mutable models so later edits cannot bypass structural checks.
-    checked = DiagramSpec.model_validate(spec.model_dump())
-    style = resolve_style(checked.style)
-    _node_colors(checked, style)
-    return validate_diagram(checked)
+    """Validate a spec without running a layout engine (compatibility entry point)."""
+    from scifig.diagrams.pipeline import prepare_diagram
+
+    return prepare_diagram(spec).diagnostics
 
 
 def _path(edge: EdgeGeometry) -> ArtistPath:
@@ -155,12 +142,14 @@ def _wrapped_label(text: str, width: float, font: FontProperties, renderer: Any)
     return "\n".join(lines)
 
 
-def _draw(result: DiagramResult) -> None:
-    spec, geometry, ax = result.spec, result.layout, result.ax
-    colors = _node_colors(spec, result.style)
-    appearance = diagram_appearance(result.style.preset)
+def _draw(
+    result: DiagramResult, diagram: CanonicalDiagram, presentation: ResolvedPresentation
+) -> None:
+    geometry, ax = result.layout, result.ax
+    colors = presentation.node_colors
+    appearance = presentation.appearance
     base_size = float(result.style.rc["font.size"])
-    for group_id, group in spec.groups.items():
+    for group_id, group in diagram.groups.items():
         x0, y0, x1, y1 = geometry.groups[group_id].bounds
         patch = FancyBboxPatch(
             (x0, y0),
@@ -179,7 +168,7 @@ def _draw(result: DiagramResult) -> None:
         ax.text(
             x0 + 6,
             y1 - 5,
-            group.label,
+            diagram.presentation.group_labels[group_id],
             ha="left",
             va="top",
             fontsize=base_size * 0.9,
@@ -187,7 +176,7 @@ def _draw(result: DiagramResult) -> None:
             zorder=4,
             gid=f"group-label:{group_id}",
         )
-    for i, (edge, route) in enumerate(zip(spec.edges, geometry.edges, strict=True)):
+    for i, (edge, route) in enumerate(zip(diagram.edges, geometry.edges, strict=True)):
         arrow = FancyArrowPatch(
             path=_path(route),
             arrowstyle="-|>",
@@ -201,10 +190,11 @@ def _draw(result: DiagramResult) -> None:
         )
         ax.add_patch(arrow)
         result.edge_artists.append(arrow)
-        if edge.label:
+        label = diagram.presentation.edge_labels[i]
+        if label:
             position = route.label_position or tuple(np.mean(route.points, axis=0))
             ax.annotate(
-                edge.label,
+                label,
                 xy=position,
                 xytext=(0, 3),
                 textcoords="offset points",
@@ -219,7 +209,7 @@ def _draw(result: DiagramResult) -> None:
     ax.figure.canvas.draw()
     renderer = ax.figure.canvas.get_renderer()
     font = FontProperties(family=result.style.rc["font.family"], size=base_size)
-    for node_id, node in spec.nodes.items():
+    for node_id, node in diagram.nodes.items():
         box = geometry.nodes[node_id]
         x, y = box.center
         w, h = box.size
@@ -242,7 +232,9 @@ def _draw(result: DiagramResult) -> None:
         pixel_width = (
             ax.transData.transform((x + w / 2, y))[0] - ax.transData.transform((x - w / 2, y))[0]
         )
-        label = _wrapped_label(node.label, max(1, pixel_width - 10), font, renderer)
+        label = _wrapped_label(
+            diagram.presentation.node_labels[node_id], max(1, pixel_width - 10), font, renderer
+        )
         details = []
         if node.shape is not None:
             details.append(" × ".join(map(str, node.shape)) if node.shape else "scalar")
@@ -286,7 +278,7 @@ def _draw(result: DiagramResult) -> None:
                 zorder=4,
                 gid=f"node-label:{node_id}",
             )
-    kinds = [kind for kind in EDGE_STYLES if any(e.kind == kind for e in spec.edges)]
+    kinds = [kind for kind in EDGE_STYLES if any(e.kind == kind for e in diagram.edges)]
     if any(kind != "data" for kind in kinds):
         handles = [
             Line2D(
@@ -308,123 +300,36 @@ def _draw(result: DiagramResult) -> None:
         )
 
 
-def _samples(edge: EdgeGeometry) -> np.ndarray:
-    if not edge.curved:
-        return np.concatenate(
-            [np.linspace(a, b, 24) for a, b in zip(edge.points, edge.points[1:], strict=False)]
-        )
-    samples = []
-    t = np.linspace(0, 1, 24)[:, None]
-    for i in range(0, len(edge.points) - 1, 3):
-        a, b, c, d = np.asarray(edge.points[i : i + 4])
-        samples.append(
-            (1 - t) ** 3 * a + 3 * (1 - t) ** 2 * t * b + 3 * (1 - t) * t**2 * c + t**3 * d
-        )
-    return np.concatenate(samples)
+def render_geometry(
+    spec: DiagramSpec,
+    diagram: CanonicalDiagram,
+    geometry: DiagramGeometry,
+    presentation: ResolvedPresentation,
+) -> DiagramResult:
+    """Draw canonical content and validated point geometry with resolved visual tokens.
 
-
-def check_diagram_visual(result: DiagramResult) -> list[str]:
-    """Check rendered labels, node overlaps and routes through unrelated nodes.
-
-    These are geometry heuristics; they do not verify architecture semantics.
+    ``spec`` is retained only for result/export compatibility. Pipeline callers
+    validate geometry before entering this implementation.
     """
-    diagnostics = check_visual(result.figure)
-    renderer = result.figure.canvas.get_renderer()
-    boxes = {key: artist.get_window_extent(renderer) for key, artist in result.node_artists.items()}
-    names = list(boxes)
-    for i, a in enumerate(names):
-        for b in names[i + 1 :]:
-            if boxes[a].overlaps(boxes[b]):
-                diagnostics.append(f"Nodes {a!r} and {b!r} overlap; adjust positions or spacing.")
-    for text in result.ax.texts:
-        gid = text.get_gid() or ""
-        if gid.startswith(("node-label:", "node-detail:")):
-            node_id = gid.split(":", 1)[1]
-            label_box = text.get_window_extent(renderer)
-            node_box = boxes[node_id]
-            if (
-                label_box.x0 < node_box.x0 + 2
-                or label_box.x1 > node_box.x1 - 2
-                or label_box.y0 < node_box.y0 + 2
-                or label_box.y1 > node_box.y1 - 2
-            ):
-                diagnostics.append(
-                    f"Node {node_id!r}: label does not fit; "
-                    "increase node size or figure dimensions."
-                )
-        elif gid.startswith("edge-label:"):
-            label_box = text.get_window_extent(renderer)
-            if any(label_box.overlaps(box) for box in boxes.values()):
-                diagnostics.append("An edge label overlaps a node; adjust spacing or its route.")
-        elif gid.startswith("group-label:"):
-            group_id = gid.split(":", 1)[1]
-            group_box = result.group_artists[group_id].get_window_extent(renderer)
-            label_box = text.get_window_extent(renderer)
-            if label_box.x1 > group_box.x1 - 2 or label_box.y0 < group_box.y0 + 2:
-                diagnostics.append(f"Group {group_id!r}: label does not fit its boundary.")
-            if any(label_box.overlaps(box) for box in boxes.values()):
-                diagnostics.append(f"Group {group_id!r}: label overlaps a node.")
-    text_by_gid = {text.get_gid(): text for text in result.ax.texts}
-    for node_id in result.spec.nodes:
-        main = text_by_gid.get(f"node-label:{node_id}")
-        detail = text_by_gid.get(f"node-detail:{node_id}")
-        if (
-            main is not None
-            and detail is not None
-            and main.get_window_extent(renderer).overlaps(detail.get_window_extent(renderer))
-        ):
-            diagnostics.append(f"Node {node_id!r}: title and detail labels overlap.")
-    memberships = {
-        node: group_id for group_id, group in result.spec.groups.items() for node in group.nodes
-    }
-    for group_id, group_artist in result.group_artists.items():
-        group_box = group_artist.get_window_extent(renderer)
-        for node_id, node_box in boxes.items():
-            if memberships.get(node_id) != group_id and node_box.overlaps(group_box):
-                diagnostics.append(f"Group {group_id!r} overlaps unrelated node {node_id!r}.")
-    for edge, route in zip(result.spec.edges, result.layout.edges, strict=True):
-        samples = _samples(route)
-        for node_id, node in result.layout.nodes.items():
-            if node_id in {edge.source, edge.target} and edge.source != edge.target:
-                continue
-            x, y = node.center
-            w, h = node.size
-            inside = (
-                (samples[:, 0] > x - w / 2 + 1)
-                & (samples[:, 0] < x + w / 2 - 1)
-                & (samples[:, 1] > y - h / 2 + 1)
-                & (samples[:, 1] < y + h / 2 - 1)
-            )
-            if inside.any():
-                diagnostics.append(
-                    f"Edge {edge.source!r} → {edge.target!r} crosses node {node_id!r}; reroute it."
-                )
-    return list(dict.fromkeys(diagnostics))
-
-
-def render_diagram(spec: DiagramSpec) -> DiagramResult:
-    """Render one architecture using shared styles and vector export machinery."""
-    spec = DiagramSpec.model_validate(spec.model_dump())
-    with warnings.catch_warnings(record=True) as records:
-        warnings.simplefilter("always")
-        diagnostics = validate_diagram_config(spec)
-        style = resolve_style(spec.style)
-        geometry = layout_diagram(spec)
-        with mpl.rc_context(style.rc):
-            figure = Figure(figsize=style.figsize, layout="none")
-            FigureCanvasAgg(figure)
-            ax = figure.add_axes((0.035, 0.12, 0.93, 0.74 if spec.title else 0.83))
-            x0, y0, x1, y1 = geometry.bounds
-            pad = max(10, min(x1 - x0, y1 - y0) * 0.08)
-            ax.set(xlim=(x0 - pad, x1 + pad), ylim=(y0 - pad, y1 + pad), aspect="equal")
-            ax.set_axis_off()
-            if spec.title:
-                figure.suptitle(spec.title, y=0.97, fontsize=style.rc["axes.titlesize"])
-            result = DiagramResult(figure, ax, spec, style, geometry)
-            _draw(result)
-            diagnostics.extend(check_diagram_visual(result))
-    diagnostics.extend(str(record.message) for record in records)
-    result.diagnostics = list(dict.fromkeys(diagnostics))
-    for message in result.diagnostics:
-        warnings.warn(message, FigureWarning, stacklevel=2)
+    style = presentation.style
+    title = diagram.presentation.title
+    with mpl.rc_context(style.rc):
+        figure = Figure(figsize=style.figsize, layout="none")
+        FigureCanvasAgg(figure)
+        ax = figure.add_axes((0.035, 0.12, 0.93, 0.74 if title else 0.83))
+        x0, y0, x1, y1 = geometry.bounds
+        pad = max(10, min(x1 - x0, y1 - y0) * 0.08)
+        ax.set(xlim=(x0 - pad, x1 + pad), ylim=(y0 - pad, y1 + pad), aspect="equal")
+        ax.set_axis_off()
+        if title:
+            figure.suptitle(title, y=0.97, fontsize=style.rc["axes.titlesize"])
+        result = DiagramResult(figure, ax, spec, style, geometry, diagram=diagram)
+        _draw(result, diagram, presentation)
     return result
+
+
+def render_diagram(spec: DiagramSpec, *, geometry: DiagramGeometry | None = None) -> DiagramResult:
+    """Render a spec; optionally use supplied geometry without invoking an engine."""
+    from scifig.diagrams.pipeline import render_diagram as run_pipeline
+
+    return run_pipeline(spec, geometry=geometry)

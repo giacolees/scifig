@@ -1,0 +1,152 @@
+diagram:
+  type: architecture
+  nodes:
+    train_data:
+      label: Training data
+      role: data
+      position: null
+      size:
+      - 1.4
+      - 0.85
+      shape: null
+      operation: null
+      frozen: false
+    trainer:
+      label: Train model
+      role: module
+      position: null
+      size:
+      - 1.4
+      - 0.85
+      shape: null
+      operation: null
+      frozen: false
+    loss:
+      label: Loss
+      role: loss
+      position: null
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+    weights:
+      label: Saved weights
+      role: store
+      position: null
+      size:
+      - 1.4
+      - 0.85
+      shape: null
+      operation: null
+      frozen: false
+    input:
+      label: Input
+      role: input
+      position: null
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+    model:
+      label: Model
+      role: module
+      position: null
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: true
+    output:
+      label: Prediction
+      role: output
+      position: null
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+  edges:
+  - source: train_data
+    target: trainer
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: trainer
+    target: loss
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: loss
+    target: trainer
+    label: Update
+    kind: gradient
+    source_port: null
+    target_port: null
+  - source: trainer
+    target: weights
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: weights
+    target: model
+    label: Load
+    kind: control
+    source_port: null
+    target_port: null
+  - source: input
+    target: model
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: model
+    target: output
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  groups:
+    training:
+      label: Training
+      nodes:
+      - train_data
+      - trainer
+      - loss
+      role: training
+    inference:
+      label: Inference
+      nodes:
+      - input
+      - model
+      - output
+      role: inference
+  direction: left_to_right
+  layout: graphviz
+  feedforward: false
+  title: Illustrative training and inference
+  style:
+    preset: publication
+    width: double_column
+    height: 4.0
+    font_family: null
+    font_size: null
+    palette: accessible
+    colors: {}
+    rc: {}
+  export:
+    formats:
+    - pdf
+    - svg
+    - png
+    directory: .
+    stem: diagrams_training_inference
+    dpi: 300

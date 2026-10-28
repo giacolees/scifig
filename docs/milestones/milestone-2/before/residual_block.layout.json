@@ -1,0 +1,334 @@
+{
+  "bounds": [
+    -50.4,
+    -73.8,
+    482.4,
+    73.8
+  ],
+  "edges": [
+    {
+      "curved": false,
+      "end_point": null,
+      "label_position": [
+        72.0,
+        25.200000000000003
+      ],
+      "points": [
+        [
+          50.4,
+          17.639999999999997
+        ],
+        [
+          93.6,
+          32.760000000000005
+        ]
+      ]
+    },
+    {
+      "curved": false,
+      "end_point": null,
+      "label_position": [
+        72.0,
+        -25.200000000000003
+      ],
+      "points": [
+        [
+          50.4,
+          -17.639999999999997
+        ],
+        [
+          93.6,
+          -32.760000000000005
+        ]
+      ]
+    },
+    {
+      "curved": false,
+      "end_point": null,
+      "label_position": [
+        216.0,
+        25.200000000000003
+      ],
+      "points": [
+        [
+          194.4,
+          32.760000000000005
+        ],
+        [
+          237.6,
+          17.639999999999997
+        ]
+      ]
+    },
+    {
+      "curved": false,
+      "end_point": null,
+      "label_position": [
+        216.0,
+        -25.200000000000003
+      ],
+      "points": [
+        [
+          194.4,
+          -32.760000000000005
+        ],
+        [
+          237.6,
+          -17.639999999999997
+        ]
+      ]
+    },
+    {
+      "curved": false,
+      "end_point": null,
+      "label_position": [
+        360.0,
+        0.0
+      ],
+      "points": [
+        [
+          338.4,
+          0.0
+        ],
+        [
+          381.6,
+          0.0
+        ]
+      ]
+    }
+  ],
+  "engine": "manual",
+  "engine_version": null,
+  "figure_size_inches": [
+    7.0,
+    2.5
+  ],
+  "groups": {},
+  "matplotlib_version": "3.11.2",
+  "nodes": {
+    "add": {
+      "center": [
+        288.0,
+        0.0
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    },
+    "identity": {
+      "center": [
+        144.0,
+        -50.4
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    },
+    "input": {
+      "center": [
+        0.0,
+        0.0
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    },
+    "output": {
+      "center": [
+        432.0,
+        0.0
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    },
+    "transform": {
+      "center": [
+        144.0,
+        50.4
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    }
+  },
+  "schema_version": 1,
+  "scifig_version": "0.2.0",
+  "spec": {
+    "direction": "left_to_right",
+    "edges": [
+      {
+        "kind": "data",
+        "label": "",
+        "source": "input",
+        "source_port": null,
+        "target": "transform",
+        "target_port": null
+      },
+      {
+        "kind": "data",
+        "label": "",
+        "source": "input",
+        "source_port": null,
+        "target": "identity",
+        "target_port": null
+      },
+      {
+        "kind": "data",
+        "label": "",
+        "source": "transform",
+        "source_port": null,
+        "target": "add",
+        "target_port": null
+      },
+      {
+        "kind": "data",
+        "label": "",
+        "source": "identity",
+        "source_port": null,
+        "target": "add",
+        "target_port": null
+      },
+      {
+        "kind": "data",
+        "label": "",
+        "source": "add",
+        "source_port": null,
+        "target": "output",
+        "target_port": null
+      }
+    ],
+    "export": {
+      "directory": "../../../../figures",
+      "dpi": 300,
+      "formats": [
+        "pdf",
+        "svg",
+        "png"
+      ],
+      "stem": "figure"
+    },
+    "feedforward": true,
+    "groups": {},
+    "layout": "manual",
+    "nodes": {
+      "add": {
+        "frozen": false,
+        "label": "Add",
+        "operation": "add",
+        "position": [
+          4.0,
+          0.0
+        ],
+        "role": "operation",
+        "shape": [
+          "B",
+          "C",
+          "H",
+          "W"
+        ],
+        "size": [
+          1.4,
+          0.65
+        ]
+      },
+      "identity": {
+        "frozen": false,
+        "label": "Identity",
+        "operation": "identity",
+        "position": [
+          2.0,
+          -0.7
+        ],
+        "role": "module",
+        "shape": [
+          "B",
+          "C",
+          "H",
+          "W"
+        ],
+        "size": [
+          1.4,
+          0.65
+        ]
+      },
+      "input": {
+        "frozen": false,
+        "label": "Input",
+        "operation": null,
+        "position": [
+          0.0,
+          0.0
+        ],
+        "role": "input",
+        "shape": [
+          "B",
+          "C",
+          "H",
+          "W"
+        ],
+        "size": [
+          1.4,
+          0.65
+        ]
+      },
+      "output": {
+        "frozen": false,
+        "label": "Output",
+        "operation": null,
+        "position": [
+          6.0,
+          0.0
+        ],
+        "role": "output",
+        "shape": [
+          "B",
+          "C",
+          "H",
+          "W"
+        ],
+        "size": [
+          1.4,
+          0.65
+        ]
+      },
+      "transform": {
+        "frozen": false,
+        "label": "Transform",
+        "operation": null,
+        "position": [
+          2.0,
+          0.7
+        ],
+        "role": "module",
+        "shape": [
+          "B",
+          "C",
+          "H",
+          "W"
+        ],
+        "size": [
+          1.4,
+          0.65
+        ]
+      }
+    },
+    "style": {
+      "colors": {},
+      "font_family": null,
+      "font_size": null,
+      "height": 2.5,
+      "palette": "accessible",
+      "preset": "editorial",
+      "rc": {},
+      "width": "double_column"
+    },
+    "title": "Residual block",
+    "type": "architecture"
+  }
+}

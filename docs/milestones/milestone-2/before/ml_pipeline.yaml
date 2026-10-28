@@ -1,0 +1,100 @@
+diagram:
+  type: architecture
+  nodes:
+    data:
+      label: Data
+      role: input
+      position: null
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+    preprocess:
+      label: Preprocess
+      role: operation
+      position: null
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+    encoder:
+      label: Encoder
+      role: module
+      position: null
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+    classifier:
+      label: Classifier
+      role: module
+      position: null
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+    prediction:
+      label: Prediction
+      role: output
+      position: null
+      size:
+      - 1.4
+      - 0.65
+      shape: null
+      operation: null
+      frozen: false
+  edges:
+  - source: data
+    target: preprocess
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: preprocess
+    target: encoder
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: encoder
+    target: classifier
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  - source: classifier
+    target: prediction
+    label: ''
+    kind: data
+    source_port: null
+    target_port: null
+  groups: {}
+  direction: left_to_right
+  layout: graphviz
+  feedforward: true
+  title: Illustrative ML pipeline
+  style:
+    preset: publication
+    width: double_column
+    height: 1.4
+    font_family: null
+    font_size: null
+    palette: accessible
+    colors: {}
+    rc: {}
+  export:
+    formats:
+    - pdf
+    - svg
+    - png
+    directory: .
+    stem: diagrams_ml_pipeline
+    dpi: 300
