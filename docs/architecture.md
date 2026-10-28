@@ -130,4 +130,4 @@ not a new input format. Callers who edit native artists must rerun visual checks
 No typing checker is configured in this repository. Typed interfaces are covered
 by annotations and contract tests, rather than a claimed static type-check pass.
 The [Milestone 2 review report](milestones/milestone-2/review.md) records technical
-verification and the separate pending human approval gate.
+verification and the separate human approval decision.

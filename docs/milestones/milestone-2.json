@@ -1,6 +1,6 @@
 {
   "milestone": 2,
-  "status": "READY_FOR_HUMAN_REVIEW",
+  "status": "PASSED",
   "change_summaries": [
     "Strict canonical IR separates semantic nodes/ordered edges/flat groups, layout hints and presentation; conversion copies and revalidates mutable inputs.",
     "Manual and Graphviz LayoutEngine adapters preserve existing routing and point geometry; pipeline owns dispatch and pre-drawing validation.",
@@ -37,7 +37,7 @@
     "No static typing checker is configured; interfaces have annotations and contract tests.",
     "Direct layout adapters require validated canonical input; pipeline entry points perform validation."
   ],
-  "human_decision": null,
-  "human_feedback": null,
-  "approval_timestamp_utc": null
+  "human_decision": "APPROVE",
+  "human_feedback": "approved",
+  "approval_timestamp_utc": "2026-10-28T17:32:54Z"
 }

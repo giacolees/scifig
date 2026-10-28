@@ -1,9 +1,8 @@
 # Milestone 2 review
 
 The canonical diagram pipeline is implemented. Automated checks and visual
-inspection are complete. Human approval is pending in
-[the milestone record](../milestone-2.json); technical success does not mark the
-milestone PASSED. Milestone 3 is out of scope.
+inspection are complete. Human approval was explicitly received and recorded in
+[the milestone record](../milestone-2.json); Milestone 2 is PASSED. Milestone 3 is out of scope.
 
 ## Changes
 
@@ -86,7 +85,6 @@ entry points for validation guarantees. No known blocking implementation issues.
 
 ## Human decision
 
-The version-controlled JSON record remains `READY_FOR_HUMAN_REVIEW` with nullable
-human decision, feedback and UTC approval timestamp. Only an explicit APPROVE
-changes it to PASSED. REQUEST CHANGES records feedback as CHANGES_REQUESTED;
-corrections must be verified and returned to review. Silence leaves it pending.
+The user explicitly approved Milestone 2 ("approved"). The version-controlled
+JSON record is `PASSED`, with human decision `APPROVE` and approval timestamp
+`2026-10-28T17:32:54Z`. Technical validation and human approval are recorded separately.
