@@ -77,7 +77,7 @@ iteration. Keep the source data and code with the outputs. Native Matplotlib
 objects remain available as `result.figure` and `result.ax`; review caveats in
 `result.diagnostics`.
 
-Styles are configuration: choose `publication`, `neurips` or `journal`, then set
+Styles are configuration: choose `publication`, `neurips`, `journal` or `editorial`, then set
 physical width, height, fonts, colors or rc overrides. Presets are starting points,
 not guarantees of venue compliance. See the [API guide](docs/api.md).
 
@@ -147,6 +147,12 @@ result.export("figures", stem="architecture")
 result.save_layout("figures/architecture.layout.json")
 ```
 
+Packaged starting points can be discovered with `list_diagram_templates()` and
+loaded as fresh editable specs with `load_diagram_template(name)`. The
+`research_workflow` and `residual_block` templates use manual layout and the
+restrained `editorial` preset; see the [template guide](docs/diagrams.md#packaged-starting-points)
+for customization and validation.
+
 For automatic placement and routing, install the external
 [Graphviz `dot` executable](https://graphviz.org/download/) and choose
 `layout="graphviz"` without manual positions. Graphviz supplies geometry;
@@ -171,6 +177,8 @@ Every preview has an executable source specification and vector exports.
 | [Ablation studies](docs/gallery/ablation.png) | [YAML](examples/specs/ablation.yaml) | [PDF](docs/gallery/ablation.pdf) · [SVG](docs/gallery/ablation.svg) |
 | [Distribution comparisons](docs/gallery/distribution.png) | [YAML](examples/specs/distribution.yaml) | [PDF](docs/gallery/distribution.pdf) · [SVG](docs/gallery/distribution.svg) |
 | [Heatmaps](docs/gallery/heatmap.png) | [YAML](examples/specs/heatmap.yaml) | [PDF](docs/gallery/heatmap.pdf) · [SVG](docs/gallery/heatmap.svg) |
+| [Research workflow](docs/gallery/diagrams_research_workflow.png) | [YAML](src/scifig/diagrams/template_sources/research_workflow.yaml) | [PDF](docs/gallery/diagrams_research_workflow.pdf) · [SVG](docs/gallery/diagrams_research_workflow.svg) |
+| [Residual block](docs/gallery/diagrams_residual_block.png) | [YAML](src/scifig/diagrams/template_sources/residual_block.yaml) | [PDF](docs/gallery/diagrams_residual_block.pdf) · [SVG](docs/gallery/diagrams_residual_block.svg) |
 | [ML pipeline](docs/gallery/diagrams_ml_pipeline.png) | [YAML](examples/diagrams/ml_pipeline.yaml) | [PDF](docs/gallery/diagrams_ml_pipeline.pdf) · [SVG](docs/gallery/diagrams_ml_pipeline.svg) |
 | [Encoder–decoder with skip connection](docs/gallery/diagrams_encoder_decoder.png) | [YAML](examples/diagrams/encoder_decoder.yaml) | [PDF](docs/gallery/diagrams_encoder_decoder.pdf) · [SVG](docs/gallery/diagrams_encoder_decoder.svg) |
 | [Training and inference system](docs/gallery/diagrams_training_inference.png) | [YAML](examples/diagrams/training_inference.yaml) | [PDF](docs/gallery/diagrams_training_inference.pdf) · [SVG](docs/gallery/diagrams_training_inference.svg) |

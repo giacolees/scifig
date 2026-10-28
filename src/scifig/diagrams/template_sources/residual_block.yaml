@@ -1,0 +1,37 @@
+diagram:
+  title: Residual block
+  layout: manual
+  feedforward: true
+  style: {preset: editorial, width: double_column, height: 2.5}
+  nodes:
+    input:
+      label: Input
+      role: input
+      position: [0, 0]
+      shape: [B, C, H, W]
+    transform:
+      label: Transform
+      position: [2, 0.7]
+      shape: [B, C, H, W]
+    identity:
+      label: Identity
+      operation: identity
+      position: [2, -0.7]
+      shape: [B, C, H, W]
+    add:
+      label: Add
+      role: operation
+      operation: add
+      position: [4, 0]
+      shape: [B, C, H, W]
+    output:
+      label: Output
+      role: output
+      position: [6, 0]
+      shape: [B, C, H, W]
+  edges:
+    - {source: input, target: transform}
+    - {source: input, target: identity}
+    - {source: transform, target: add}
+    - {source: identity, target: add}
+    - {source: add, target: output}

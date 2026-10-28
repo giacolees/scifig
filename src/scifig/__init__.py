@@ -19,6 +19,7 @@ from scifig.core.specs import (
 )
 from scifig.diagrams.rendering import DiagramResult
 from scifig.diagrams.specs import DiagramSpec, EdgeSpec, GroupSpec, NodeSpec
+from scifig.diagrams.templates import list_diagram_templates, load_diagram_template
 from scifig.rendering.matplotlib import FigureResult, FigureWarning, render, validate
 from scifig.styles import list_styles
 
@@ -43,9 +44,11 @@ __all__ = [
     "distribution",
     "heatmap",
     "learning_curve",
+    "list_diagram_templates",
     "list_styles",
     "list_templates",
     "load_spec",
+    "load_diagram_template",
     "register_template",
     "render",
     "validate",

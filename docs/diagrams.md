@@ -48,6 +48,45 @@ Its [directed layout engine](https://graphviz.org/docs/layouts/dot/) and
 edge paths; Matplotlib draws the resulting vectors. Nothing is rasterized or
 converted into a screenshot. No Graphviz code or binary is bundled in scifig.
 
+## Packaged starting points
+
+Discover and load the editable templates through the Python API:
+
+```python
+from scifig import list_diagram_templates, load_diagram_template, render
+
+print(list_diagram_templates())  # ['research_workflow', 'residual_block']
+spec = load_diagram_template("research_workflow")
+spec.nodes["question"].label = "Study question"
+result = render(spec)  # revalidates the edited spec
+result.export()  # defaults to figures/ in PDF, SVG and PNG
+result.save_layout("figures/workflow.layout.json")
+print(result.diagnostics)
+```
+
+Each load returns a fresh `DiagramSpec`. The packaged source files are
+[`research_workflow.yaml`](../src/scifig/diagrams/template_sources/research_workflow.yaml)
+and [`residual_block.yaml`](../src/scifig/diagrams/template_sources/residual_block.yaml).
+They use manual positions and need no Graphviz. The workflow is a conceptual
+illustration with feedback, not evidence of a particular research process. The
+residual block declares symbolic output shapes and identity/add operations so the
+existing shape checks can check compatible declarations; this does not prove an
+actual implementation has those shapes.
+
+Customize labels, roles, positions, sizes, shapes and operations on nodes; edges,
+ports, groups, title, style and export settings are also ordinary `DiagramSpec`
+fields. Match all changes to the supplied evidence. Rendering revalidates mutable
+specs; invalid endpoints, groups, cycles when feedforward is requested, and
+contradictory supported shapes fail. See the graph rules below for limitations.
+The templates use the `editorial` preset: neutral ink, muted accents, subtle fills
+and white background with the existing physical typography settings. It is also
+available to other figures as a style preset.
+
+Preserve the customized YAML or Python source, execution command, and dependency
+and font versions with the exports. A layout JSON records generated geometry and
+versions; it is not a render input and cannot replace the source. Exact appearance
+can vary with dependencies and fonts even with the same specification.
+
 ## Graph and layout
 
 - Node IDs are unique keys in `nodes`. Each node has a `label` and optional `role` (`input`, `output`, `module`, `data`, `store`, `loss`, or `operation`). `size` is `[width, height]` in nominal inches, defaulting to `[1.4, 0.65]`. `frozen: true` marks a frozen component.
@@ -80,10 +119,30 @@ inference and general neural-network tracing are outside this first version.
 
 ## Illustrative gallery
 
-Generate all examples with `python examples/make_diagram_gallery.py`. Graphviz is needed for the automatic examples. Each source specification is in `examples/diagrams/` and each export and layout JSON is in `docs/gallery/`.
+Generate all examples with `python examples/make_diagram_gallery.py`. Graphviz is needed for the automatic examples. Original examples are in `examples/diagrams/`; packaged templates are linked above. Exports and layout JSON are in `docs/gallery/`; the packaged starters also include resolved YAML with every default.
 
 | Example | Layout | Preview | Vector |
 | --- | --- | --- | --- |
+| Research workflow | Manual | [PNG](gallery/diagrams_research_workflow.png) | [PDF](gallery/diagrams_research_workflow.pdf), [SVG](gallery/diagrams_research_workflow.svg) |
+| Residual block | Manual | [PNG](gallery/diagrams_residual_block.png) | [PDF](gallery/diagrams_residual_block.pdf), [SVG](gallery/diagrams_residual_block.svg) |
 | ML pipeline | Graphviz | [PNG](gallery/diagrams_ml_pipeline.png) | [PDF](gallery/diagrams_ml_pipeline.pdf), [SVG](gallery/diagrams_ml_pipeline.svg) |
 | Encoder–decoder and skip | Manual | [PNG](gallery/diagrams_encoder_decoder.png) | [PDF](gallery/diagrams_encoder_decoder.pdf), [SVG](gallery/diagrams_encoder_decoder.svg) |
 | Training and inference | Graphviz | [PNG](gallery/diagrams_training_inference.png) | [PDF](gallery/diagrams_training_inference.pdf), [SVG](gallery/diagrams_training_inference.svg) |
+
+Resolved starter sources and geometry: research workflow [YAML](gallery/diagrams_research_workflow.yaml)
+and [layout JSON](gallery/diagrams_research_workflow.layout.json); residual block
+[YAML](gallery/diagrams_residual_block.yaml) and [layout JSON](gallery/diagrams_residual_block.layout.json).
+
+## Future interoperability
+
+The current renderer uses native Matplotlib primitives and does not import external
+art or provide adapters. Potential future directions have different semantics:
+[Penrose](https://penrose.cs.cmu.edu/docs/tutorial/basics) separates domain,
+substance and style for constraint-based mathematical diagrams;
+[LikeC4](https://likec4.dev/dsl/views/) derives views from a software architecture
+model; and [C4-PlantUML](https://github.com/plantuml-stdlib/C4-PlantUML)
+expresses C4 architecture diagrams as PlantUML source. A future integration would
+need an explicit mapping of supported concepts, views, constraints and layout;
+translation would not automatically preserve all semantics. Generating C4-PlantUML
+source and importing LikeC4 graphs/views or Penrose diagrams remain future work.
+Any reuse of external assets would require a licensing and attribution review.

@@ -17,6 +17,12 @@ dimensions; distinguish a conceptual illustration from measured results. Use the
 architecture diagram API and consult `docs/diagrams.md` for layout and validation.
 Graphviz layout requires the external `dot` executable; manual layout does not.
 Shape diagnostics check supplied declarations only and do not infer a graph from code.
+Discover starting points with `list_diagram_templates()` and load a fresh editable
+spec with `load_diagram_template(name)`. The conceptual `research_workflow` and
+shape-declared `residual_block` use manual layout and need no Graphviz. Customize
+only fields supported by the evidence: node labels, roles, positions and shapes,
+edges, groups, style and export options. Revalidate after edits; matching symbolic
+shapes are declarations, not proof of a model implementation.
 
 For data figures, choose an existing template before creating custom plotting code:
 
@@ -52,7 +58,9 @@ Make at most two revision renders after the initial render (three total). Fix
 observed defects and re-inspect after each revision. At the limit, report unresolved
 issues and the specific change needed. Export PDF and SVG plus a PNG preview unless
 the user requests fewer formats. Preserve input data, source specification and code,
-execution command, dependency versions and the interval/aggregation explanation.
+execution command, dependency and font versions, and the interval/aggregation
+explanation. For diagrams preserve the source spec and any layout JSON with the
+exports; the JSON records generated geometry and is not a render input.
 Deliver the outputs with caveats that affect their interpretation.
 
 For Codex, a prompt can say: "$scientific-figures: compare DAgger, AggreVaTe and BC

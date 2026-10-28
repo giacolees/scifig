@@ -160,27 +160,32 @@ class FigureSpec(_Model):
         return self
 
 
+def _parse_spec(source: Any) -> "FigureSpec | DiagramSpec":
+    """Parse a YAML stream with the same strict rules for files and resources."""
+    raw = yaml.load(source, Loader=_UniqueLoader)
+    if not isinstance(raw, dict):
+        raise ValueError("specification must be a mapping")
+    wrapper = "diagram" if "diagram" in raw else "figure" if "figure" in raw else None
+    if wrapper is not None:
+        if set(raw) != {wrapper}:
+            raise ValueError(f"{wrapper} wrapper cannot have sibling keys")
+        raw = raw[wrapper]
+        if not isinstance(raw, dict):
+            raise ValueError(f"{wrapper} must be a mapping")
+    from scifig.diagrams.specs import DiagramSpec
+
+    is_diagram = wrapper == "diagram" or (
+        wrapper is None and (raw.get("type") == "architecture" or "nodes" in raw)
+    )
+    return DiagramSpec.model_validate(raw) if is_diagram else FigureSpec.model_validate(raw)
+
+
 def load_spec(path: str | Path) -> "FigureSpec | DiagramSpec":
     """Load YAML and resolve its paths relative to the specification file."""
     path = Path(path).resolve()
     try:
         with path.open(encoding="utf-8") as stream:
-            raw = yaml.load(stream, Loader=_UniqueLoader)
-        if not isinstance(raw, dict):
-            raise ValueError("specification must be a mapping")
-        wrapper = "diagram" if "diagram" in raw else "figure" if "figure" in raw else None
-        if wrapper is not None:
-            if set(raw) != {wrapper}:
-                raise ValueError(f"{wrapper} wrapper cannot have sibling keys")
-            raw = raw[wrapper]
-            if not isinstance(raw, dict):
-                raise ValueError(f"{wrapper} must be a mapping")
-        from scifig.diagrams.specs import DiagramSpec
-
-        is_diagram = wrapper == "diagram" or (
-            wrapper is None and (raw.get("type") == "architecture" or "nodes" in raw)
-        )
-        spec = DiagramSpec.model_validate(raw) if is_diagram else FigureSpec.model_validate(raw)
+            spec = _parse_spec(stream)
         if isinstance(spec, FigureSpec) and spec.data is not None:
             spec.data = (path.parent / spec.data).resolve()
         spec.export.directory = (path.parent / spec.export.directory).resolve()

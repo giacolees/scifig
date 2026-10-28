@@ -1,0 +1,258 @@
+{
+  "bounds": [
+    -50.4,
+    -73.8,
+    482.4,
+    23.400000000000002
+  ],
+  "edges": [
+    {
+      "curved": false,
+      "end_point": null,
+      "label_position": [
+        72.0,
+        0.0
+      ],
+      "points": [
+        [
+          50.4,
+          0.0
+        ],
+        [
+          93.6,
+          0.0
+        ]
+      ]
+    },
+    {
+      "curved": false,
+      "end_point": null,
+      "label_position": [
+        216.0,
+        -25.200000000000003
+      ],
+      "points": [
+        [
+          194.4,
+          -17.639999999999997
+        ],
+        [
+          237.6,
+          -32.760000000000005
+        ]
+      ]
+    },
+    {
+      "curved": false,
+      "end_point": null,
+      "label_position": [
+        360.0,
+        -25.200000000000003
+      ],
+      "points": [
+        [
+          338.4,
+          -32.760000000000005
+        ],
+        [
+          381.6,
+          -17.639999999999997
+        ]
+      ]
+    },
+    {
+      "curved": false,
+      "end_point": null,
+      "label_position": [
+        288.0,
+        23.400000000000002
+      ],
+      "points": [
+        [
+          432.0,
+          23.400000000000002
+        ],
+        [
+          144.0,
+          23.400000000000002
+        ]
+      ]
+    }
+  ],
+  "engine": "manual",
+  "engine_version": null,
+  "figure_size_inches": [
+    7.0,
+    2.5
+  ],
+  "groups": {},
+  "matplotlib_version": "3.11.2",
+  "nodes": {
+    "evidence": {
+      "center": [
+        432.0,
+        0.0
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    },
+    "experiment": {
+      "center": [
+        288.0,
+        -50.4
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    },
+    "hypothesis": {
+      "center": [
+        144.0,
+        0.0
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    },
+    "question": {
+      "center": [
+        0.0,
+        0.0
+      ],
+      "size": [
+        100.8,
+        46.800000000000004
+      ]
+    }
+  },
+  "schema_version": 1,
+  "scifig_version": "0.2.0",
+  "spec": {
+    "direction": "left_to_right",
+    "edges": [
+      {
+        "kind": "data",
+        "label": "",
+        "source": "question",
+        "source_port": null,
+        "target": "hypothesis",
+        "target_port": null
+      },
+      {
+        "kind": "data",
+        "label": "",
+        "source": "hypothesis",
+        "source_port": null,
+        "target": "experiment",
+        "target_port": null
+      },
+      {
+        "kind": "data",
+        "label": "",
+        "source": "experiment",
+        "source_port": null,
+        "target": "evidence",
+        "target_port": null
+      },
+      {
+        "kind": "feedback",
+        "label": "Conceptual feedback",
+        "source": "evidence",
+        "source_port": "n",
+        "target": "hypothesis",
+        "target_port": "n"
+      }
+    ],
+    "export": {
+      "directory": ".",
+      "dpi": 300,
+      "formats": [
+        "pdf",
+        "svg",
+        "png"
+      ],
+      "stem": "diagrams_research_workflow"
+    },
+    "feedforward": false,
+    "groups": {},
+    "layout": "manual",
+    "nodes": {
+      "evidence": {
+        "frozen": false,
+        "label": "Evidence",
+        "operation": null,
+        "position": [
+          6.0,
+          0.0
+        ],
+        "role": "output",
+        "shape": null,
+        "size": [
+          1.4,
+          0.65
+        ]
+      },
+      "experiment": {
+        "frozen": false,
+        "label": "Experiment",
+        "operation": null,
+        "position": [
+          4.0,
+          -0.7
+        ],
+        "role": "module",
+        "shape": null,
+        "size": [
+          1.4,
+          0.65
+        ]
+      },
+      "hypothesis": {
+        "frozen": false,
+        "label": "Hypothesis",
+        "operation": null,
+        "position": [
+          2.0,
+          0.0
+        ],
+        "role": "module",
+        "shape": null,
+        "size": [
+          1.4,
+          0.65
+        ]
+      },
+      "question": {
+        "frozen": false,
+        "label": "Research question",
+        "operation": null,
+        "position": [
+          0.0,
+          0.0
+        ],
+        "role": "input",
+        "shape": null,
+        "size": [
+          1.4,
+          0.65
+        ]
+      }
+    },
+    "style": {
+      "colors": {},
+      "font_family": null,
+      "font_size": null,
+      "height": 2.5,
+      "palette": "accessible",
+      "preset": "editorial",
+      "rc": {},
+      "width": "double_column"
+    },
+    "title": "Conceptual research workflow",
+    "type": "architecture"
+  }
+}

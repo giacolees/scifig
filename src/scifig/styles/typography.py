@@ -2,6 +2,7 @@
 
 PRESETS = {
     "publication": {"single_column": 3.4, "double_column": 7.0, "font_size": 9.0},
+    "editorial": {"single_column": 3.4, "double_column": 7.0, "font_size": 9.0},
     "neurips": {"single_column": 3.25, "double_column": 6.75, "font_size": 9.0},
     "journal": {"single_column": 3.5, "double_column": 7.2, "font_size": 9.0},
 }

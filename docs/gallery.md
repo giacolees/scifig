@@ -21,5 +21,5 @@ Vector downloads:
 Colors are explicitly mapped to methods in applicable figures. Physical dimensions and export settings are in the specs; presets do not certify compliance with any venue.
 
 The [architecture diagram gallery](diagrams.md#illustrative-gallery) adds an
-illustrative ML pipeline, encoder–decoder with a skip connection, and a training
-and inference system. These describe example structures, not empirical results.
+illustrative research workflow, residual block, ML pipeline, encoder–decoder
+with a skip connection, and a training and inference system. These describe example structures, not empirical results.

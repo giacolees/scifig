@@ -18,23 +18,13 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 from matplotlib.path import Path as ArtistPath
 
+from scifig.diagrams._appearance import EDGE_STYLES, diagram_appearance
 from scifig.diagrams.layout import DiagramGeometry, EdgeGeometry, layout_diagram
 from scifig.diagrams.specs import DiagramSpec, validate_diagram
 from scifig.rendering.export import export_figure, save_figure
 from scifig.rendering.matplotlib import FigureWarning
 from scifig.styles import ResolvedStyle, resolve_style
 from scifig.validation.visual import check_visual
-
-_ROLE_COLORS = {
-    "input": "#0072B2",
-    "output": "#0072B2",
-    "module": "#555555",
-    "data": "#009E73",
-    "store": "#009E73",
-    "loss": "#D55E00",
-    "operation": "#555555",
-}
-_EDGE_STYLES = {"data": "-", "gradient": "--", "control": ":", "feedback": "-."}
 
 
 @dataclass
@@ -117,8 +107,11 @@ class DiagramResult:
 def _node_colors(spec: DiagramSpec, style: ResolvedStyle) -> dict[str, str]:
     if style.colors:
         return style.color_map(list(spec.nodes))
+    appearance = diagram_appearance(style.preset)
     return {
-        key: "#555555" if style.palette == "grayscale" else _ROLE_COLORS[node.role]
+        key: appearance.grayscale_node
+        if style.palette == "grayscale"
+        else appearance.role_colors[node.role]
         for key, node in spec.nodes.items()
     }
 
@@ -165,6 +158,7 @@ def _wrapped_label(text: str, width: float, font: FontProperties, renderer: Any)
 def _draw(result: DiagramResult) -> None:
     spec, geometry, ax = result.spec, result.layout, result.ax
     colors = _node_colors(spec, result.style)
+    appearance = diagram_appearance(result.style.preset)
     base_size = float(result.style.rc["font.size"])
     for group_id, group in spec.groups.items():
         x0, y0, x1, y1 = geometry.groups[group_id].bounds
@@ -173,9 +167,9 @@ def _draw(result: DiagramResult) -> None:
             x1 - x0,
             y1 - y0,
             boxstyle="round,pad=0,rounding_size=5",
-            facecolor="#F7F8FA",
-            edgecolor="#888888",
-            linewidth=0.7,
+            facecolor=appearance.group_fill,
+            edgecolor=appearance.group_border,
+            linewidth=appearance.group_linewidth,
             linestyle="--" if group.role == "training" else "-",
             zorder=0,
             gid=f"group:{group_id}",
@@ -189,7 +183,7 @@ def _draw(result: DiagramResult) -> None:
             ha="left",
             va="top",
             fontsize=base_size * 0.9,
-            color="#555555",
+            color=appearance.secondary_text,
             zorder=4,
             gid=f"group-label:{group_id}",
         )
@@ -197,10 +191,10 @@ def _draw(result: DiagramResult) -> None:
         arrow = FancyArrowPatch(
             path=_path(route),
             arrowstyle="-|>",
-            mutation_scale=8,
-            linewidth=0.9,
-            color="#444444",
-            linestyle=_EDGE_STYLES[edge.kind],
+            mutation_scale=appearance.arrow_size,
+            linewidth=appearance.edge_linewidth,
+            color=appearance.edge_color,
+            linestyle=EDGE_STYLES[edge.kind],
             zorder=1,
             clip_on=False,
             gid=f"edge:{i}",
@@ -218,7 +212,7 @@ def _draw(result: DiagramResult) -> None:
                 va="bottom",
                 fontsize=base_size * 0.85,
                 zorder=4,
-                bbox={"facecolor": "white", "edgecolor": "none", "pad": 1},
+                bbox={"facecolor": appearance.label_background, "edgecolor": "none", "pad": 1},
                 gid=f"edge-label:{i}",
             )
     # Compute physical available text width after equal-aspect axes adjustment.
@@ -230,7 +224,7 @@ def _draw(result: DiagramResult) -> None:
         x, y = box.center
         w, h = box.size
         rgb = np.array(to_rgb(colors[node_id]))
-        face = tuple(0.08 * rgb + 0.92)
+        face = tuple(appearance.node_tint * rgb + (1 - appearance.node_tint))
         patch = FancyBboxPatch(
             (x - w / 2, y - h / 2),
             w,
@@ -238,7 +232,7 @@ def _draw(result: DiagramResult) -> None:
             boxstyle="round,pad=0,rounding_size=3",
             facecolor=face,
             edgecolor=colors[node_id],
-            linewidth=0.8,
+            linewidth=appearance.node_linewidth,
             linestyle="--" if node.frozen else "-",
             zorder=3,
             gid=f"node:{node_id}",
@@ -277,7 +271,7 @@ def _draw(result: DiagramResult) -> None:
                 ha="center",
                 va="center",
                 fontsize=detail_size,
-                color="#555555",
+                color=appearance.secondary_text,
                 zorder=4,
                 gid=f"node-detail:{node_id}",
             )
@@ -292,15 +286,15 @@ def _draw(result: DiagramResult) -> None:
                 zorder=4,
                 gid=f"node-label:{node_id}",
             )
-    kinds = [kind for kind in _EDGE_STYLES if any(e.kind == kind for e in spec.edges)]
+    kinds = [kind for kind in EDGE_STYLES if any(e.kind == kind for e in spec.edges)]
     if any(kind != "data" for kind in kinds):
         handles = [
             Line2D(
                 [0],
                 [0],
-                color="#444444",
-                linestyle=_EDGE_STYLES[kind],
-                linewidth=0.9,
+                color=appearance.edge_color,
+                linestyle=EDGE_STYLES[kind],
+                linewidth=appearance.edge_linewidth,
                 label=kind.capitalize(),
             )
             for kind in kinds

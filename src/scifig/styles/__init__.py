@@ -21,6 +21,7 @@ class ResolvedStyle:
     rc: dict[str, Any]
     colors: dict[str, str]
     palette: str = "accessible"
+    preset: str = "publication"
 
     def color_map(self, categories: list[str]) -> dict[str, str]:
         """Return stable colors for the requested categories."""
@@ -62,4 +63,4 @@ def resolve_style(style: "StyleSpec | str" = "publication") -> ResolvedStyle:
         rc[key] = value
     for color in style.colors.values():
         to_rgba(color)
-    return ResolvedStyle((width, height), rc, dict(style.colors), style.palette)
+    return ResolvedStyle((width, height), rc, dict(style.colors), style.palette, style.preset)

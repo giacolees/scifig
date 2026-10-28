@@ -1,0 +1,24 @@
+diagram:
+  title: Conceptual research workflow
+  layout: manual
+  style: {preset: editorial, width: double_column, height: 2.5}
+  nodes:
+    question:
+      label: Research question
+      role: input
+      position: [0, 0]
+    hypothesis:
+      label: Hypothesis
+      position: [2, 0]
+    experiment:
+      label: Experiment
+      position: [4, -0.7]
+    evidence:
+      label: Evidence
+      role: output
+      position: [6, 0]
+  edges:
+    - {source: question, target: hypothesis}
+    - {source: hypothesis, target: experiment}
+    - {source: experiment, target: evidence}
+    - {source: evidence, target: hypothesis, kind: feedback, label: Conceptual feedback, source_port: n, target_port: n}
